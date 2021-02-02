@@ -3,6 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.sql import text
 import psycopg2
+from psycopg2.extras import RealDictCursor
 
 from app.db import get_db
 from app.dbsession import DBSession
@@ -86,3 +87,34 @@ async def get_crime_score(city: str):
     ret_dict["msg"]     = f"{city} crime score"
     ret_dict["score"]   = gen_crime_score(city_scl[0])
     return ret_dict
+
+@router.get('/rent_rate/{city}')
+async def get_rent_rate(city: str):
+  '''
+  Takes in a city as its parameter and returns a dictionary of keys including:
+   - Dec Avg Rent
+   - Jan Proj Rent
+   - Feb Proj Rent
+   - Mar Proj Rent
+   Average last month's rent in that city and projected rent for the next three months
+  '''
+  cursor = db_conn.cursor(cursor_factory=RealDictCursor)
+  sql = f'SELECT * FROM cityspire_rent WHERE "City"= \'{city}\';'
+  cursor.execute(sql)
+  ret_dict = cursor.fetchone()
+  # not sure if it's neccessary to close the cursor?
+  cursor.close()
+  return ret_dict
+
+@router.get('/population_data/{city}')
+async def get_population_data(city: str):
+  '''
+  Returns 2019 population data for the city passed in,
+  in dictionary format with keys for 'City' and '2019-Population
+  '''
+  cur = db_conn.cursor(cursor_factory=RealDictCursor)
+  sql = f'SELECT "City", "2019-Population" FROM cityspire_population WHERE "City"= \'{city}\';'
+  cur.execute(sql)
+  result = cur.fetchone()
+  cur.close()
+  return result
