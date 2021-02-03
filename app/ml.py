@@ -113,7 +113,7 @@ async def get_rent_rate(city: str):
     cursor.execute(sql, (city,))
     avg_rent = cursor.fetchone()
   except (Exception, psycopg2.Error) as error:
-    ret_dict['Error'] = f"error fetching crime score data for city: {city} - {error}"
+    ret_dict['Error'] = f"error fetching rent data for city: {city} - {error}"
     return ret_dict
 
   # return error if there was no data found
@@ -123,7 +123,6 @@ async def get_rent_rate(city: str):
   else:
     ret_dict['avg_rent'] = avg_rent[0]
   
-
   # not sure if it's neccessary to close the cursor?
   cursor.close()
   return ret_dict
@@ -131,12 +130,38 @@ async def get_rent_rate(city: str):
 @router.get('/population_data/{city}')
 async def get_population_data(city: str):
   '''
-  Returns 2019 population data for the city passed in,
-  in dictionary format with keys for 'City' and '2019-Population
+  Returns population data for the city passed in
+  e.g.
+  {
+    msg: 'City Population
+    population: 123456
+  }
   '''
-  cur = db_conn.cursor()
-  sql = 'SELECT "2019-Population" FROM cityspire_population WHERE "City"= %s;'
-  cur.execute(sql, (city,))
-  result = cur.fetchone()
-  cur.close()
-  return result
+  if len(city) == 0:
+    # raise error if city is missing
+    raise HTTPException(status_code=400, detail="missing city parameter")
+
+  # set up the return dictionary
+  ret_dict = {}
+  ret_dict['msg'] = f'{city} Population'
+  ret_dict['population'] = None
+
+  # query the database
+  try:
+    cursor = db_conn.cursor()
+    sql = 'SELECT "population" FROM cityspire_cities WHERE "city_code" = %s;'
+    cursor.execute(sql, (city,))
+    population = cursor.fetchone()
+  except (Exception, psycopg2.Error) as error:
+    ret_dict['Error'] = f"error fetching population data for city: {city} - {error}"
+    return ret_dict
+
+  # return error if there was no data found
+  if population == None:
+    ret_dict['Error'] = f'{city} population data not found'
+    return ret_dict
+  else:
+    ret_dict['population'] = population[0]
+  
+  cursor.close()
+  return ret_dict
