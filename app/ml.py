@@ -3,7 +3,6 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.sql import text
 import psycopg2
-from psycopg2.extras import RealDictCursor
 
 from app.db import get_db
 from app.dbsession import DBSession
@@ -91,17 +90,40 @@ async def get_crime_score(city: str):
 @router.get('/rent_rate/{city}')
 async def get_rent_rate(city: str):
   '''
-  Takes in a city as its parameter and returns a dictionary of keys including:
-   - Dec Avg Rent
-   - Jan Proj Rent
-   - Feb Proj Rent
-   - Mar Proj Rent
-   Average last month's rent in that city and projected rent for the next three months
+  Takes in a city as its parameter and returns a dictionary:
+  e.g:
+  {
+    msg: 'avg city rent',
+    avg_city_rent: 2100
+  }
   '''
-  cursor = db_conn.cursor(cursor_factory=RealDictCursor)
-  sql = f'SELECT * FROM cityspire_rent WHERE "City"= \'{city}\';'
-  cursor.execute(sql)
-  ret_dict = cursor.fetchone()
+  if len(city) == 0:
+      # raise error if city is missing
+      raise HTTPException(status_code=400, detail="missing city parameter")
+
+  # set up the return dictionary
+  ret_dict = {}
+  ret_dict['msg'] = f'{city} Average Rent'
+  ret_dict['avg_rent'] = None
+
+  # query the database
+  try:
+    cursor = db_conn.cursor()
+    sql = 'SELECT "Dec Avg Rent" FROM cityspire_rent WHERE "City"= %s;'
+    cursor.execute(sql, (city,))
+    avg_rent = cursor.fetchone()
+  except (Exception, psycopg2.Error) as error:
+    ret_dict['Error'] = f"error fetching crime score data for city: {city} - {error}"
+    return ret_dict
+
+  # return error if there was no data found
+  if avg_rent == None:
+    ret_dict['Error'] = f'{city} average rent not found'
+    return ret_dict
+  else:
+    ret_dict['avg_rent'] = avg_rent[0]
+  
+
   # not sure if it's neccessary to close the cursor?
   cursor.close()
   return ret_dict
@@ -112,9 +134,9 @@ async def get_population_data(city: str):
   Returns 2019 population data for the city passed in,
   in dictionary format with keys for 'City' and '2019-Population
   '''
-  cur = db_conn.cursor(cursor_factory=RealDictCursor)
-  sql = f'SELECT "City", "2019-Population" FROM cityspire_population WHERE "City"= \'{city}\';'
-  cur.execute(sql)
+  cur = db_conn.cursor()
+  sql = 'SELECT "2019-Population" FROM cityspire_population WHERE "City"= %s;'
+  cur.execute(sql, (city,))
   result = cur.fetchone()
   cur.close()
   return result
