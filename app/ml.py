@@ -86,3 +86,82 @@ async def get_crime_score(city: str):
     ret_dict["msg"]     = f"{city} crime score"
     ret_dict["score"]   = gen_crime_score(city_scl[0])
     return ret_dict
+
+@router.get('/rent_rate/{city}')
+async def get_rent_rate(city: str):
+  '''
+  Takes in a city as its parameter and returns a dictionary:
+  e.g:
+  {
+    msg: 'avg city rent',
+    avg_city_rent: 2100
+  }
+  '''
+  if len(city) == 0:
+      # raise error if city is missing
+      raise HTTPException(status_code=400, detail="missing city parameter")
+
+  # set up the return dictionary
+  ret_dict = {}
+  ret_dict['msg'] = f'{city} Average Rent'
+  ret_dict['avg_rent'] = None
+
+  # query the database
+  try:
+    cursor = db_conn.cursor()
+    sql = 'SELECT "Dec Avg Rent" FROM cityspire_rent WHERE "City"= %s;'
+    cursor.execute(sql, (city,))
+    avg_rent = cursor.fetchone()
+  except (Exception, psycopg2.Error) as error:
+    ret_dict['Error'] = f"error fetching rent data for city: {city} - {error}"
+    return ret_dict
+
+  # return error if there was no data found
+  if avg_rent == None:
+    ret_dict['Error'] = f'{city} average rent not found'
+    return ret_dict
+  else:
+    ret_dict['avg_rent'] = avg_rent[0]
+  
+  # not sure if it's neccessary to close the cursor?
+  cursor.close()
+  return ret_dict
+
+@router.get('/population_data/{city}')
+async def get_population_data(city: str):
+  '''
+  Returns population data for the city passed in
+  e.g.
+  {
+    msg: 'City Population
+    population: 123456
+  }
+  '''
+  if len(city) == 0:
+    # raise error if city is missing
+    raise HTTPException(status_code=400, detail="missing city parameter")
+
+  # set up the return dictionary
+  ret_dict = {}
+  ret_dict['msg'] = f'{city} Population'
+  ret_dict['population'] = None
+
+  # query the database
+  try:
+    cursor = db_conn.cursor()
+    sql = 'SELECT "population" FROM cityspire_cities WHERE "city_code" = %s;'
+    cursor.execute(sql, (city,))
+    population = cursor.fetchone()
+  except (Exception, psycopg2.Error) as error:
+    ret_dict['Error'] = f"error fetching population data for city: {city} - {error}"
+    return ret_dict
+
+  # return error if there was no data found
+  if population == None:
+    ret_dict['Error'] = f'{city} population data not found'
+    return ret_dict
+  else:
+    ret_dict['population'] = population[0]
+  
+  cursor.close()
+  return ret_dict
