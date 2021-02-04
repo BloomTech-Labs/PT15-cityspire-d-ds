@@ -94,7 +94,7 @@ async def get_rent_rate(city: str):
   e.g:
   {
     msg: 'avg city rent',
-    avg_city_rent: 2100
+    avg_rent: 2100
   }
   '''
   if len(city) == 0:
@@ -109,7 +109,7 @@ async def get_rent_rate(city: str):
   # query the database
   try:
     cursor = db_conn.cursor()
-    sql = 'SELECT "Dec Avg Rent" FROM cityspire_rent WHERE "City"= %s;'
+    sql = 'SELECT "Dec Avg Rent" FROM cityspire_rent WHERE "city_code"= %s;'
     cursor.execute(sql, (city,))
     avg_rent = cursor.fetchone()
   except (Exception, psycopg2.Error) as error:
