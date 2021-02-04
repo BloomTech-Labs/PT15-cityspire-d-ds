@@ -53,8 +53,8 @@ async def cities():
     # Do we have a list of supported cities?
     if len(store_cities) == 0:
       # list of supported cities is 0 - an error has occurred
-      raise HTTPException(status_code=500, detail=f"no supported cities found")
-      return []
+      ret_dict = {"msg": "no supported cities found"}
+      raise HTTPException(status_code=500, detail=ret_dict)
 
     return store_cities
 
@@ -79,34 +79,36 @@ async def get_crime_score(city: str):
       - "error": error message
       - "score": `5` (best) to `1` (worst) score
     """
-    # Validate the city parameter
-    if len(city) == 0:
-        # error: missing city parameter
-        raise HTTPException(status_code=400, detail="missing city parameter")
-
     # Define a response object
     ret_dict            = {}
     ret_dict["ok"]      = False
     ret_dict["msg"]     = ""
     ret_dict["error"]   = None
-    ret_dict["score"]   = -1
+    ret_dict["score"]   = None
+
+    # Validate the city parameter
+    if len(city) == 0:
+      # error: missing city parameter
+      ret_dict["error"] = "missing city parameter"
+      raise HTTPException(status_code=400, detail=ret_dict)
 
     # Query the database
     sql = "SELECT combined_scaled_rate FROM cityspire_crime WHERE city_code = %s"
     try:
-        cursor      = db_conn.cursor()      # construct a database cursor
-        cursor.execute(sql, (city,))        # execute the sql query
-        city_scl    = cursor.fetchone()     # fetch the query results
-        cursor.close()                      # close cursor
+      cursor      = db_conn.cursor()      # construct a database cursor
+      cursor.execute(sql, (city,))        # execute the sql query
+      city_scl    = cursor.fetchone()     # fetch the query results
+      cursor.close()                      # close cursor
 
     except (Exception, psycopg2.Error) as error:
-        ret_dict["error"] = f"error fetching crime score data for city: {city} - {error}"
-        return ret_dict
+      ret_dict["error"] = f"error fetching crime score data for city: {city} - {error}"
+      return ret_dict
 
     # Was the city found?
     if city_scl == None:
-        # no results returned from the query - crime score not found
-        raise HTTPException(status_code=404, detail=f"city: {city} not found")
+      # no results returned from the query - crime score not found
+      ret_dict["error"] = f"city: {city} not found"
+      raise HTTPException(status_code=404, detail=ret_dict)
     
     # Return results
     ret_dict["ok"]      = True
