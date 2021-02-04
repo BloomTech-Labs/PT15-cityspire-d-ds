@@ -3,6 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.sql import text
 import psycopg2
+from random import randint
 
 from app.db import get_db
 from app.dbsession import DBSession
@@ -165,3 +166,125 @@ async def get_population_data(city: str):
   
   cursor.close()
   return ret_dict
+
+@router.get('/city_scr/{city}')
+async def get_city_scr(city: str):
+    """
+    NOTE: CURRENTLY ROUTE RETURNS MOCK DATA
+
+    city_scr returns an overall city quality of life score (1-5)
+    for the passed city. 
+      - 5: best quality of life score
+      - 1: worst quality of life score
+
+    request:
+      - GET `/city_scr/<normalized city name>`
+
+    examples:
+      - GET `/city_scr/St_Louis`
+      - GET `/city_scr/New_York_City`
+      - GET `/city_scr/Houston`
+
+    return values:
+      - "ok":    `True` (no errors found); `False` (errors found)
+      - "error": error message
+      - "score": `5` (best) to `1` (worst) score
+    """
+    # Define a response object
+    ret_dict            = {}
+    ret_dict["ok"]      = False
+    ret_dict["msg"]     = ""
+    ret_dict["error"]   = None
+    ret_dict["score"]   = None
+
+    # Validate the city parameter
+    if len(city) == 0:
+      # error: missing city parameter
+      ret_dict["error"] = "missing city parameter"
+      raise HTTPException(status_code=400, detail=ret_dict)
+
+    # Query the database for the passed city code
+    sql = "SELECT COUNT(*) FROM cityspire_cities WHERE city_code = %s"
+    try:
+        cursor      = db_conn.cursor()      # construct a database cursor
+        cursor.execute(sql, (city,))        # execute the sql query
+        city_val    = cursor.fetchone()     # fetch the query results
+        cursor.close()
+
+    except (Exception, psycopg2.Error) as error:
+        ret_dict["error"] = f"error fetching the overall quality of life score for city: {city} - {error}"
+        raise HTTPException(status_code=500, detail=ret_dict)
+
+    # Was the city found?
+    if city_val[0] == 0:
+        # no results returned from the query - quality of life crime score not found
+        ret_dict["error"] = f"quality of life score for city: {city} not found"
+        raise HTTPException(status_code=404, detail=ret_dict)
+    
+    # Return results
+    ret_dict["ok"]      = True
+    ret_dict["error"]   = None
+    ret_dict["msg"]     = f"{city} quality of life score"
+    ret_dict["score"]   = randint(1, 5)
+    return ret_dict
+
+@router.get('/air_qual_scr/{city}')
+async def get_air_qual_scr(city: str):
+    """
+    NOTE: CURRENTLY ROUTE RETURNS MOCK DATA
+
+    city_scr returns the air quality score (1-5)
+    for the passed city. 
+      - 5: best air quality score
+      - 1: worst air quality score
+
+    request:
+      - GET `/air_qual_scr/<normalized city name>`
+
+    examples:
+      - GET `/air_qual_scr/St_Louis`
+      - GET `/air_qual_scr/New_York_City`
+      - GET `/air_qual_scr/Houston`
+
+    return values:
+      - "ok":    `True` (no errors found); `False` (errors found)
+      - "error": error message
+      - "score": `5` (best) to `1` (worst) score
+    """
+    # Define a response object
+    ret_dict            = {}
+    ret_dict["ok"]      = False
+    ret_dict["msg"]     = ""
+    ret_dict["error"]   = None
+    ret_dict["score"]   = None
+
+    # Validate the city parameter
+    if len(city) == 0:
+      # error: missing city parameter
+      ret_dict["error"] = "missing city parameter"
+      raise HTTPException(status_code=400, detail=ret_dict)
+
+    # Query the database for the passed city code
+    sql = "SELECT COUNT(*) FROM cityspire_cities WHERE city_code = %s"
+    try:
+      cursor      = db_conn.cursor()      # construct a database cursor
+      cursor.execute(sql, (city,))        # execute the sql query
+      city_val    = cursor.fetchone()     # fetch the query results
+      cursor.close()
+
+    except (Exception, psycopg2.Error) as error:
+      ret_dict["error"] = f"error fetching the air quality score for city: {city} - {error}"
+      raise HTTPException(status_code=500, detail=ret_dict)
+
+    # Was the city found?
+    if city_val[0] == 0:
+      # no results returned from the query - quality of life crime score not found
+      ret_dict["error"] = f"air quality score for city: {city} not found"
+      raise HTTPException(status_code=404, detail=ret_dict)
+    
+    # Return results
+    ret_dict["ok"]      = True
+    ret_dict["error"]   = None
+    ret_dict["msg"]     = f"{city} air quality score score"
+    ret_dict["score"]   = randint(1, 5)
+    return ret_dict
