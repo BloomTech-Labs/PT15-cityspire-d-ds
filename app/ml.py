@@ -165,3 +165,60 @@ async def get_population_data(city: str):
   
   cursor.close()
   return ret_dict
+
+@router.get('/walk_scr/{city}')
+async def get_walk_scr(city: str):
+    """
+    get_walk_scr returns a walkability score (1-5) for the 
+    passed city. 
+      - 5: best walkability score  (most "walkable")
+      - 1: worst walkability score (least "walkable")
+
+    request:
+      - GET `/walk_scr/<normalized city name>`
+
+    examples:
+      - GET `/walk_scr/St_Louis`
+      - GET `/walk_scr/New_York`
+      - GET `/walk_scr/Houston`
+
+    return values:
+      - "ok":    `True` (no errors found); `False` (errors found)
+      - "error": error message
+      - "score": `5` (best) to `1` (worst) score
+    """
+    # Validate the city parameter
+    if len(city) == 0:
+        # error: missing city parameter
+        raise HTTPException(status_code=400, detail="missing city parameter")
+
+    # Define a response object
+    ret_dict            = {}
+    ret_dict["ok"]      = False
+    ret_dict["msg"]     = ""
+    ret_dict["error"]   = None
+    ret_dict["score"]   = -1
+
+    # Query the database
+    sql = "SELECT walk_score FROM cityspire_wlk_scr WHERE city_code = %s"
+    try:
+        cursor      = db_conn.cursor()      # construct a database cursor
+        cursor.execute(sql, (city,))        # execute the sql query
+        wlk_scr_100 = cursor.fetchone()     # fetch the query results
+        cursor.close()                      # close cursor
+
+    except (Exception, psycopg2.Error) as error:
+        ret_dict["error"] = f"error the walkability scorefor city: {city} - {error}"
+        return ret_dict
+
+    # Was the city found?
+    if wlk_scr_100 == None:
+        # no results returned from the query - raw walk score not found
+        raise HTTPException(status_code=404, detail=f"walkability score for city: {city} not found")
+    
+    # Return results
+    ret_dict["ok"]      = True
+    ret_dict["error"]   = None
+    ret_dict["msg"]     = f"{city} walkability score"
+    ret_dict["score"]   = gen_crime_score(float(wlk_scr_100[0])/100.0)
+    return ret_dict
