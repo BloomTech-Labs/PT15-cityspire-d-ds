@@ -7,7 +7,7 @@ from psycopg2.extras import RealDictCursor
 
 from app.db import get_db
 from app.dbsession import DBSession
-from app.helpers import gen_crime_score
+from app.helpers import gen_crime_score, get_rent_score
 
 router = APIRouter()
 
@@ -120,11 +120,23 @@ async def get_crime_score(city: str):
 @router.get('/rent_rate/{city}')
 async def get_rent_rate(city: str):
   '''
-  Takes in a city as its parameter and returns a dictionary:
-  e.g:
+  Takes in a city and return avg_rent and score (1-5):
+  avg_rent: the raw average rent for that city
+  score: 1 = expensive city rent
+         5 = cheap city rent
+
+  request:
+    - GET `/rent_rate/<normalized city code>`
+
+  examples:
+    - GET `/rent_rate/St_Louis`
+    - GET `/rent_rate/New_York_City`
+    - GET `/rent_rate/Houston`  
+  returns
   {
-    msg: 'avg city rent',
-    avg_rent: 2100
+    - msg: '{City} Average Rent',
+    - avg_rent: the raw average rent
+    - score: 5(best/cheapest)-1(worst/most expensive)
   }
   '''
   if len(city) == 0:
@@ -135,6 +147,7 @@ async def get_rent_rate(city: str):
   ret_dict = {}
   ret_dict['msg'] = f'{city} Average Rent'
   ret_dict['avg_rent'] = None
+  ret_dict['score'] = 0
 
   # query the database
   try:
@@ -152,6 +165,7 @@ async def get_rent_rate(city: str):
     return ret_dict
   else:
     ret_dict['avg_rent'] = avg_rent[0]
+    ret_dict['score'] = get_rent_score(avg_rent[0])
   
   # not sure if it's neccessary to close the cursor?
   cursor.close()

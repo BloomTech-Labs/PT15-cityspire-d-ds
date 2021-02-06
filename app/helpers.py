@@ -16,4 +16,18 @@ def gen_crime_score(val):
 
     # Lowest scaled crime score -> best crime rating
     return 5
-    
+
+# generates a rent_score based on quantiles of all rent rates
+def get_rent_score(avg_rent):
+    buckets = [ 742. , 1203.6, 1364. , 1535.6, 1721.2, 2993. ]
+    if buckets[0] <= avg_rent <= buckets[1]:
+        score = 5
+    elif avg_rent <= buckets[2]:
+        score = 4
+    elif avg_rent <= buckets[3]:
+        score = 3
+    elif avg_rent <= buckets[4]:
+        score = 2
+    elif avg_rent <= buckets[5]:
+        score = 1
+    return score    
