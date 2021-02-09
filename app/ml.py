@@ -42,9 +42,10 @@ else:
 async def db_test():
     """
     db_test tests the db session object's connection 
-    to the Postgres database
+    to the Postgres database and returns connection 
+    information as a json document
     """
-    return store_cities
+    return db_sess.test_connection()
 
 @router.get('/cities')
 async def cities():
