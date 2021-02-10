@@ -8,7 +8,7 @@ from random import randint
 
 from app.db import get_db
 from app.dbsession import DBSession
-from app.helpers import gen_crime_score, get_rent_score
+from app.helpers import gen_crime_score, get_rent_score, get_aq_score
 
 router = APIRouter()
 
@@ -359,7 +359,6 @@ async def get_city_scr(city: str):
 @router.get('/air_qual_scr/{city}')
 async def get_air_qual_scr(city: str):
     """
-    NOTE: CURRENTLY ROUTE RETURNS MOCK DATA
 
     city_scr returns the air quality score (1-5)
     for the passed city. 
@@ -393,7 +392,7 @@ async def get_air_qual_scr(city: str):
       raise HTTPException(status_code=400, detail=ret_dict)
 
     # Query the database for the passed city code
-    sql = "SELECT COUNT(*) FROM cityspire_cities WHERE city_code = %s"
+    sql = 'SELECT "Combined Total" FROM cityspire_air_quality WHERE "city_code" =%s'
     try:
       cursor      = db_conn.cursor()      # construct a database cursor
       cursor.execute(sql, (city,))        # execute the sql query
@@ -413,6 +412,6 @@ async def get_air_qual_scr(city: str):
     # Return results
     ret_dict["ok"]      = True
     ret_dict["error"]   = None
-    ret_dict["msg"]     = f"{city} air quality score score"
-    ret_dict["score"]   = randint(1, 5)
+    ret_dict["msg"]     = f"{city} air quality score"
+    ret_dict["score"]   = get_aq_score(city_val[0])
     return ret_dict
