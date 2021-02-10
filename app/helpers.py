@@ -31,3 +31,18 @@ def get_rent_score(avg_rent):
     elif avg_rent <= buckets[5]:
         score = 1
     return score    
+
+def get_aq_score(combined_aq):
+    buckets = [ 7.08867508, 10.12566503, 10.89508254, 11.95768491, 12.90177913,
+                16.86715543]
+    if buckets[0] <= combined_aq <= buckets[1]:
+        score = 5
+    elif combined_aq <= buckets[2]:
+        score = 4
+    elif combined_aq <= buckets[3]:
+        score = 3
+    elif combined_aq <= buckets[4]:
+        score = 2
+    elif combined_aq <= buckets[5]:
+        score = 1
+    return score
