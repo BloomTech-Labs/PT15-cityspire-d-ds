@@ -1,21 +1,97 @@
-# gen_crime_score translates a scaled crime score to a user
-#    friendly score value (5-best to 1-worst)
-def gen_crime_score(val):
+# gen_crime_score fetches a scaled city crime rate from the
+#   database and translates that value to a 1-5 crime score
+def gen_crime_score(db_conn, city):
+    """
+    gen_crime_score fetches a scaled city crime rate from the
+    database and translates that value to a 1-5 crime score
+    """
+    ret_val = {"score": None, "error": "no score available"}
+
+    # Query the database
+    sql = "SELECT combined_scaled_rate FROM cityspire_crime WHERE city_code = %s"
+    try:
+      cursor      = db_conn.cursor()      # construct a database cursor
+      cursor.execute(sql, (city,))        # execute the sql query
+      city_scl    = cursor.fetchone()     # fetch the query results
+      cursor.close()                      # close cursor
+
+    except (Exception, psycopg2.Error) as error:
+      ret_val["error"] = f"error fetching crime score data for city: {city} - {error}"
+      return ret_val
+
+    # Was the city found?
+    if city_scl == None:
+      # no results returned from the query - crime score not found
+      ret_val["error"] = f"city: {city} not found"
+      return ret_val
+
     # Highest scaled crime score -> worst crime rating
-    if val >= 0.80:
-        return 1
+    if city_scl[0] >= 0.80:
+      ret_val["score"] = 1
+      return ret_val
     
-    if val >= 0.60:
-        return 2
+    if city_scl[0] >= 0.60:
+      ret_val["score"] = 2
+      return ret_val
 
-    if val >= 0.40:
-        return 3
+    if city_scl[0] >= 0.40:
+      ret_val["score"] = 3
+      return ret_val
 
-    if val >= 0.20:
-        return 4
+    if city_scl[0] >= 0.20:
+      ret_val["score"] = 4
+      return ret_val
 
     # Lowest scaled crime score -> best crime rating
-    return 5
+    ret_val["score"] = 5
+    return ret_val
+
+def gen_walk_score(db_conn, city):
+    """
+    gen_walk_score fetches a city walkability rating from the
+    database and translates that value to a 1-5 crime score
+    """
+    ret_val = {"score": None, "error": "no score available"}
+
+    # Query the database
+    sql = "SELECT walk_score FROM cityspire_wlk_scr WHERE city_code = %s"
+    try:
+      cursor      = db_conn.cursor()      # construct a database cursor
+      cursor.execute(sql, (city,))        # execute the sql query
+      wlk_scr_100 = cursor.fetchone()     # fetch the query results
+      cursor.close()                      # close cursor
+
+    except (Exception, psycopg2.Error) as error:
+      ret_val["error"] = f"error the walkability score for city: {city} - {error}"
+      return ret_val
+
+    # Was the city found?
+    if wlk_scr_100 == None:
+      # no results returned from the query - raw walk score not found
+      ret_val["error"] = f"walkability score for city: {city} not found"
+      return ret_val
+
+    # Highest walkability score -> best walking city
+    wlk_scr_1 = wlk_scr_100[0]/100.0
+    if wlk_scr_1 >= 0.80:
+      ret_val["score"] = 5
+      return ret_val
+    
+    if wlk_scr_1 >= 0.60:
+      ret_val["score"] = 4
+      return ret_val
+
+    if wlk_scr_1 >= 0.40:
+      ret_val["score"] = 3
+      return ret_val
+
+    if wlk_scr_1 >= 0.20:
+      ret_val["score"] = 2
+      return ret_val
+
+    # Lowest walkability score -> worst walking city
+    ret_val["score"] = 1
+    return ret_val
 
 # generates a rent_score based on quantiles of all rent rates
 def get_rent_score(avg_rent):
