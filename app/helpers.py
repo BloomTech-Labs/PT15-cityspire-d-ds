@@ -49,7 +49,7 @@ def gen_crime_score(db_conn, city):
 def gen_walk_score(db_conn, city):
     """
     gen_walk_score fetches a city walkability rating from the
-    database and translates that value to a 1-5 crime score
+    database and translates that value to a 1-5 walkability score
     """
     ret_val = {"score": None, "error": "no score available"}
 
