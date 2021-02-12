@@ -94,7 +94,11 @@ def gen_walk_score(db_conn, city):
     return ret_val
 
 # generates a rent_score based on quantiles of all rent rates
-def get_rent_score(avg_rent):
+def gen_rent_score(avg_rent):
+    '''
+    gets rent data from the database about a city and returns 
+    a score from 1-5 based on the quantiles of all cities' rent data
+    '''
     buckets = [ 742. , 1203.6, 1364. , 1535.6, 1721.2, 2993. ]
     if buckets[0] <= avg_rent <= buckets[1]:
         score = 5
@@ -108,7 +112,11 @@ def get_rent_score(avg_rent):
         score = 1
     return score    
 
-def get_aq_score(combined_aq):
+def gen_aq_score(combined_aq):
+    '''
+    gets air quality data from database for a city and generates a score
+    from 1-5 based of the air quality data for all other cities
+    '''
     buckets = [ 7.08867508, 10.12566503, 10.89508254, 11.95768491, 12.90177913,
                 16.86715543]
     if buckets[0] <= combined_aq <= buckets[1]:

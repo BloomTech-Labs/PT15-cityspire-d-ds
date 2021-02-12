@@ -8,7 +8,7 @@ from random import randint
 
 from app.db import get_db
 from app.dbsession import DBSession
-from app.helpers import gen_crime_score, get_rent_score, get_aq_score, gen_walk_score
+from app.helpers import gen_crime_score, gen_rent_score, gen_aq_score, gen_walk_score
 
 router = APIRouter()
 
@@ -181,7 +181,7 @@ async def get_rent_rate(city: str):
     return ret_dict
   else:
     ret_dict['avg_rent'] = avg_rent[0]
-    ret_dict['score'] = get_rent_score(avg_rent[0])
+    ret_dict['score'] = gen_rent_score(avg_rent[0])
   
   # not sure if it's neccessary to close the cursor?
   cursor.close()
@@ -400,5 +400,5 @@ async def get_air_qual_scr(city: str):
     ret_dict["ok"]      = True
     ret_dict["error"]   = None
     ret_dict["msg"]     = f"{city} air quality score"
-    ret_dict["score"]   = get_aq_score(city_val[0])
+    ret_dict["score"]   = gen_aq_score(city_val[0])
     return ret_dict
