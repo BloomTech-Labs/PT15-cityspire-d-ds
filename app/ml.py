@@ -268,10 +268,8 @@ async def get_walk_scr(city: str):
     return ret_dict
 
 @router.get('/city_scr/{city}')
-async def get_city_scr(city: str):
+async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: int=0):
     """
-    NOTE: CURRENTLY ROUTE RETURNS MOCK DATA
-
     city_scr returns an overall city quality of life score (1-5)
     for the passed city. 
       - 5: best quality of life score
@@ -285,11 +283,19 @@ async def get_city_scr(city: str):
 
     request:
       - GET `/city_scr/<normalized city name>`
+      - Querystring parameters
+        -  crime: integer 0-10
+        -  walk: integer 0-10
+        -  air: integer 0-10
+        -  rent: integer 0-10
+
+    business rules:
+      - all score parameters must sum to 10
 
     examples:
-      - GET `/city_scr/St_Louis`
-      - GET `/city_scr/New_York_City`
-      - GET `/city_scr/Houston`
+      - GET `/city_scr/St_Louis?crime=4&walk=2&air=1&rent=3`
+      - GET `/city_scr/New_York_City?crime=3&walk=3&air=2&rent=2`
+      - GET `/city_scr/Houston?crime=5&walk=0&air=3&rent=2``
 
     return values:
       - "ok":    `True` (no errors found); `False` (errors found)
