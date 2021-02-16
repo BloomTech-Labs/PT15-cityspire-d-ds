@@ -94,31 +94,83 @@ def gen_walk_score(db_conn, city):
     return ret_val
 
 # generates a rent_score based on quantiles of all rent rates
-def get_rent_score(avg_rent):
+def gen_rent_score(db_conn, city):
+    '''
+    gets rent data from the database about a city and returns 
+    a score from 1-5 based on the quantiles of all cities' rent data
+    '''
+    ret_val = {"score": None,
+               "avg_rent": 0,
+               "error": "no score available"}
+    
+    # query the database
+    try:
+        cursor = db_conn.cursor()
+        sql = 'SELECT "Dec Avg Rent" FROM cityspire_rent WHERE "city_code"= %s;'
+        cursor.execute(sql, (city,))
+        avg_rent = cursor.fetchone()[0]
+        cursor.close()
+    except (Exception, psycopg2.Error) as error:
+        ret_val['Error'] = f"error fetching rent data for city: {city} - {error}"
+        return ret_val
+
+    # return error if there was no data found
+    if avg_rent == None:
+        ret_val['Error'] = f'{city} average rent not found'
+        return ret_val
+    ret_val['avg_rent'] = avg_rent    
+    
+    # generate the score
     buckets = [ 742. , 1203.6, 1364. , 1535.6, 1721.2, 2993. ]
     if buckets[0] <= avg_rent <= buckets[1]:
-        score = 5
+        # best score/lowest rent
+        ret_val["score"] = 5
     elif avg_rent <= buckets[2]:
-        score = 4
+        ret_val["score"] = 4
     elif avg_rent <= buckets[3]:
-        score = 3
+        ret_val["score"] = 3
     elif avg_rent <= buckets[4]:
-        score = 2
+        ret_val["score"] = 2
     elif avg_rent <= buckets[5]:
-        score = 1
-    return score    
+        # worst score/highest rent
+        ret_val["score"] = 1
+    return ret_val    
 
-def get_aq_score(combined_aq):
+def gen_aq_score(db_conn, city):
+    '''
+    gets air quality data from database for a city and generates a score
+    from 1-5 based of the air quality data for all other cities
+    '''
+    ret_val = {"score": None, "error": "no score available"}
+    
+    # Query the database for the passed city code
+    sql = 'SELECT "Combined Total" FROM cityspire_air_quality WHERE "city_code" =%s'
+    try:
+      cursor      = db_conn.cursor()      # construct a database cursor
+      cursor.execute(sql, (city,))        # execute the sql query
+      combined_aq    = cursor.fetchone()[0]     # fetch the query results
+      cursor.close()
+
+    except (Exception, psycopg2.Error) as error:
+      ret_val["error"] = f"error fetching the air quality score for city: {city} - {error}"
+      raise HTTPException(status_code=500, detail=ret_val)
+
+    # Was the city found?
+    if combined_aq == 0:
+      # no results returned from the query - quality of life crime score not found
+      ret_val["error"] = f"air quality score for city: {city} not found"
+      raise HTTPException(status_code=404, detail=ret_val)    
+    
     buckets = [ 7.08867508, 10.12566503, 10.89508254, 11.95768491, 12.90177913,
                 16.86715543]
     if buckets[0] <= combined_aq <= buckets[1]:
-        score = 5
+        ret_val["score"] = 5
     elif combined_aq <= buckets[2]:
-        score = 4
+        ret_val["score"] = 4
     elif combined_aq <= buckets[3]:
-        score = 3
+        ret_val["score"] = 3
     elif combined_aq <= buckets[4]:
-        score = 2
+        ret_val["score"] = 2
     elif combined_aq <= buckets[5]:
-        score = 1
-    return score
+        ret_val["score"] = 1
+    return ret_val

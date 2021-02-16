@@ -8,7 +8,7 @@ from random import randint
 
 from app.db import get_db
 from app.dbsession import DBSession
-from app.helpers import gen_crime_score, get_rent_score, get_aq_score, gen_walk_score
+from app.helpers import gen_crime_score, gen_rent_score, gen_aq_score, gen_walk_score
 
 router = APIRouter()
 
@@ -155,36 +155,27 @@ async def get_rent_rate(city: str):
     - score: 5(best/cheapest)-1(worst/most expensive)
   }
   '''
-  if len(city) == 0:
-      # raise error if city is missing
-      raise HTTPException(status_code=400, detail="missing city parameter")
-
   # set up the return dictionary
   ret_dict = {}
   ret_dict['msg'] = f'{city} Average Rent'
   ret_dict['avg_rent'] = None
   ret_dict['score'] = 0
 
-  # query the database
-  try:
-    cursor = db_conn.cursor()
-    sql = 'SELECT "Dec Avg Rent" FROM cityspire_rent WHERE "city_code"= %s;'
-    cursor.execute(sql, (city,))
-    avg_rent = cursor.fetchone()
-  except (Exception, psycopg2.Error) as error:
-    ret_dict['Error'] = f"error fetching rent data for city: {city} - {error}"
-    return ret_dict
-
-  # return error if there was no data found
-  if avg_rent == None:
-    ret_dict['Error'] = f'{city} average rent not found'
-    return ret_dict
-  else:
-    ret_dict['avg_rent'] = avg_rent[0]
-    ret_dict['score'] = get_rent_score(avg_rent[0])
+  if len(city) == 0:
+      # raise error if city is missing
+      raise HTTPException(status_code=400, detail="missing city parameter")
   
-  # not sure if it's neccessary to close the cursor?
-  cursor.close()
+  # Generate the rent score
+  rent_score = gen_rent_score(db_conn, city)
+
+  # Any errors generating a score?
+  if rent_score["score"] == None:
+    ret_dict["error"] = rent_score["error"]
+    raise HTTPException(status_code=400, detail=ret_dict)
+
+  ret_dict['avg_rent'] = rent_score['avg_rent']
+  ret_dict['score'] = rent_score['score']
+  
   return ret_dict
 
 @router.get('/population_data/{city}')
@@ -374,31 +365,18 @@ async def get_air_qual_scr(city: str):
 
     # Validate the city parameter
     if len(city) == 0:
-      # error: missing city parameter
-      ret_dict["error"] = "missing city parameter"
-      raise HTTPException(status_code=400, detail=ret_dict)
+      ret_dict['error']: 'missing city parameter'
 
-    # Query the database for the passed city code
-    sql = 'SELECT "Combined Total" FROM cityspire_air_quality WHERE "city_code" =%s'
-    try:
-      cursor      = db_conn.cursor()      # construct a database cursor
-      cursor.execute(sql, (city,))        # execute the sql query
-      city_val    = cursor.fetchone()     # fetch the query results
-      cursor.close()
+    # Generate the rent score
+    aq_score = gen_aq_score(db_conn, city)
 
-    except (Exception, psycopg2.Error) as error:
-      ret_dict["error"] = f"error fetching the air quality score for city: {city} - {error}"
-      raise HTTPException(status_code=500, detail=ret_dict)
-
-    # Was the city found?
-    if city_val[0] == 0:
-      # no results returned from the query - quality of life crime score not found
-      ret_dict["error"] = f"air quality score for city: {city} not found"
-      raise HTTPException(status_code=404, detail=ret_dict)
-    
+    # Any errors generating a score?
+    if aq_score["score"] == None:
+      ret_dict["error"] = aq_score["error"]
+      raise HTTPException(status_code=400, detail=ret_dict)    
     # Return results
     ret_dict["ok"]      = True
     ret_dict["error"]   = None
     ret_dict["msg"]     = f"{city} air quality score"
-    ret_dict["score"]   = get_aq_score(city_val[0])
+    ret_dict["score"]   = aq_score['score']
     return ret_dict
