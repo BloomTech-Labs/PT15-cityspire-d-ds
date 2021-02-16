@@ -8,7 +8,8 @@ from random import randint
 
 from app.db import get_db
 from app.dbsession import DBSession
-from app.helpers import gen_crime_score, gen_rent_score, gen_aq_score, gen_walk_score
+from app.helpers import gen_crime_score, gen_rent_score, gen_aq_score, gen_walk_score, gen_city_weight
+from app.helpers import calc_wghtd_city_score
 
 router = APIRouter()
 
@@ -270,7 +271,7 @@ async def get_walk_scr(city: str):
 @router.get('/city_scr/{city}')
 async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: int=0):
     """
-    city_scr returns an overall city quality of life score (1-5)
+    city_scr returns an overall city quality of life score (1.0-5.0)
     for the passed city. 
       - 5: best quality of life score
       - 1: worst quality of life score
@@ -295,7 +296,7 @@ async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: i
     examples:
       - GET `/city_scr/St_Louis?crime=4&walk=2&air=1&rent=3`
       - GET `/city_scr/New_York_City?crime=3&walk=3&air=2&rent=2`
-      - GET `/city_scr/Houston?crime=5&walk=0&air=3&rent=2``
+      - GET `/city_scr/Houston?crime=5&walk=0&air=3&rent=2`
 
     return values:
       - "ok":    `True` (no errors found); `False` (errors found)
@@ -333,11 +334,47 @@ async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: i
         ret_dict["error"] = f"quality of life score for city: {city} not found"
         raise HTTPException(status_code=404, detail=ret_dict)
     
+    # Generate the appropriate city score weights
+    wght_dict = gen_city_weight(crime=crime, walk=walk, air=air, rent=rent)
+    
+    # Calculate the individual component city scores
+    intrm_crime = gen_crime_score(db_conn, city)
+    if intrm_crime["score"] == None:
+      # error calculating the crime score
+      ret_dict["error"] = intrm_crime["error"]
+      raise HTTPException(status_code=500, detail=ret_dict)
+
+    intrm_walk = gen_walk_score(db_conn, city)
+    if intrm_walk["score"] == None:
+      # error calculating the walkability score
+      ret_dict["error"] = intrm_walk["error"]
+      raise HTTPException(status_code=500, detail=ret_dict)
+
+    intrm_air = gen_aq_score(db_conn, city)
+    if intrm_air["score"] == None:
+      # error calculating the air quality score
+      ret_dict["error"] = intrm_air["error"]
+      raise HTTPException(status_code=500, detail=ret_dict)
+
+    intrm_rent = gen_rent_score(db_conn, city)
+    if intrm_rent["score"] == None:
+      # error calculating the rent score
+      ret_dict["error"] = intrm_rent["error"]
+      raise HTTPException(status_code=500, detail=ret_dict)
+
+    # Calculate the weighted average score
+    wght_score = calc_wghtd_city_score(
+      crime=intrm_crime["score"],
+      walk=intrm_walk["score"],
+      air=intrm_air["score"],
+      rent=intrm_rent["score"],
+      weights=wght_dict)
+    
     # Return results
     ret_dict["ok"]      = True
     ret_dict["error"]   = None
     ret_dict["msg"]     = f"{city} quality of life score"
-    ret_dict["score"]   = randint(1, 5)
+    ret_dict["score"]   = wght_score
     return ret_dict
 
 @router.get('/air_qual_scr/{city}')

@@ -1,3 +1,5 @@
+from app.config import city_score_weights
+
 # gen_crime_score fetches a scaled city crime rate from the
 #   database and translates that value to a 1-5 crime score
 def gen_crime_score(db_conn, city):
@@ -174,3 +176,48 @@ def gen_aq_score(db_conn, city):
     elif combined_aq <= buckets[5]:
         ret_val["score"] = 1
     return ret_val
+
+def gen_city_weight(crime=0, walk=0, air=0, rent=0):
+  """
+  gen_city_weight returns a dict of float city score weights
+  that sum to 1.0 (given passed integer weight values: 0-10)
+
+  example return value:
+    {"crime": 0.4, "walk": 0.3, "air": 0.1, "rent": 0.2}
+  """
+  # Validate inbound parameters (do parameter values sum to 10)
+  wght_sum = crime + walk + air + rent
+  if wght_sum != 10:
+    # weight values do not sum to 10, use default weights
+    return city_score_weights.weights_city
+
+  # Convert weights from integers to float values: 0.0 <= wgt <= 1.0
+  ret_dict = {}
+  ret_dict["crime"] = round(float(crime/10), 4)
+  ret_dict["walk"]  = round(float(walk/10), 4)
+  ret_dict["air"]   = round(float(air/10), 4)
+  ret_dict["rent"]  = 1.0 - (ret_dict["crime"] - ret_dict["walk"] - ret_dict["air"])
+
+  return ret_dict
+
+def calc_wghtd_city_score(crime: int, walk:int, air:int, rent: int, weights: dict):
+  """
+  calc_wghtd_city_score calculates a weighted average of 
+  crime, walkability, air quality, and rent scores give a set
+  of weights
+  """
+  # calculate a weighted score
+  tmp_scr = float(crime)*weights["crime"] + \
+            float(walk)*weights["walk"]   + \
+            float(air)*weights["air"]     + \
+            float(rent)*weights["rent"]
+
+  # check for extreme values
+  if tmp_scr < 0.0:
+    return 0.0
+
+  if tmp_scr > 5.0:
+    return 5.0
+
+  return round(tmp_scr, 1)
+  
