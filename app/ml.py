@@ -8,7 +8,7 @@ from random import randint
 
 from app.db import get_db
 from app.dbsession import DBSession
-from app.helpers import gen_crime_score, gen_rent_score, gen_aq_score, gen_walk_score, gen_city_weight
+from app.helpers import gen_crime_score, gen_rent_score, gen_aq_score, gen_walk_score
 from app.helpers import calc_wghtd_city_score
 
 router = APIRouter()
@@ -269,12 +269,12 @@ async def get_walk_scr(city: str):
     return ret_dict
 
 @router.get('/city_scr/{city}')
-async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: int=0):
+async def get_city_scr(city: str, crime: int=5, walk: int=5, air: int=5, rent: int=5):
     """
     city_scr returns an overall city quality of life score (1.0-5.0)
     for the passed city. 
-      - 5: best quality of life score
-      - 1: worst quality of life score
+      - 5.0: best quality of life score
+      - 1.0: worst quality of life score
 
     the city_scr is a weighted average of multiple livablity scores including
     - crime
@@ -285,23 +285,20 @@ async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: i
     request:
       - GET `/city_scr/<normalized city name>`
       - Querystring parameters
-        -  crime: integer 0-10
-        -  walk: integer 0-10
-        -  air: integer 0-10
-        -  rent: integer 0-10
-
-    business rules:
-      - all score parameters must sum to 10
+        -  crime: integer 0-10 (default value = 5)
+        -  walk: integer 0-10 (default value = 5)
+        -  air: integer 0-10 (default value = 5)
+        -  rent: integer 0-10 (default value = 5)
 
     examples:
-      - GET `/city_scr/St_Louis?crime=4&walk=2&air=1&rent=3`
-      - GET `/city_scr/New_York_City?crime=3&walk=3&air=2&rent=2`
-      - GET `/city_scr/Houston?crime=5&walk=0&air=3&rent=2`
+      - GET `/city_scr/St_Louis?crime=8&walk=4&air=4&rent=9`
+      - GET `/city_scr/New_York_City?crime=7&walk=10&air=4&rent=8`
+      - GET `/city_scr/Houston?crime=4&walk=2&air=5&rent=9`
 
     return values:
       - "ok":    `True` (no errors found); `False` (errors found)
       - "error": error message
-      - "score": `5` (best) to `1` (worst) score
+      - "score": `5.0` (best) to `1.0` (worst) score
     """
     # Define a response object
     ret_dict            = {}
@@ -334,9 +331,6 @@ async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: i
         ret_dict["error"] = f"quality of life score for city: {city} not found"
         raise HTTPException(status_code=404, detail=ret_dict)
     
-    # Generate the appropriate city score weights
-    wght_dict = gen_city_weight(crime=crime, walk=walk, air=air, rent=rent)
-    
     # Calculate the individual component city scores
     intrm_crime = gen_crime_score(db_conn, city)
     if intrm_crime["score"] == None:
@@ -362,14 +356,24 @@ async def get_city_scr(city: str, crime: int=0, walk: int=0, air: int=0, rent: i
       ret_dict["error"] = intrm_rent["error"]
       raise HTTPException(status_code=500, detail=ret_dict)
 
-    # Calculate the weighted average score
-    wght_score = calc_wghtd_city_score(
-      crime=intrm_crime["score"],
-      walk=intrm_walk["score"],
-      air=intrm_air["score"],
-      rent=intrm_rent["score"],
-      weights=wght_dict)
-    
+    # Construct a city score dict/map
+    score_dict = {
+      "crime": intrm_crime["score"],
+      "walk": intrm_walk["score"],
+      "air": intrm_air["score"],
+      "rent": intrm_rent["score"]
+    }
+    # Construct a user weighting dict/map
+    usr_weight_dict = {
+      "crime": crime,
+      "walk": walk,
+      "air": air,
+      "rent": rent
+    }
+
+    # Calculate the user's weighted average of the underlying city scores
+    wght_score = calc_wghtd_city_score(score_dict, usr_weight_dict)
+
     # Return results
     ret_dict["ok"]      = True
     ret_dict["error"]   = None
