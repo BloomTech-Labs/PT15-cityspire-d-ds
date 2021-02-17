@@ -213,8 +213,8 @@ def calc_wghtd_city_score(crime: int, walk:int, air:int, rent: int, weights: dic
             float(rent)*weights["rent"]
 
   # check for extreme values
-  if tmp_scr < 0.0:
-    return 0.0
+  if tmp_scr < 1.0:
+    return 1.0
 
   if tmp_scr > 5.0:
     return 5.0
