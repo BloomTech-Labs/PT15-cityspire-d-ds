@@ -204,6 +204,5 @@ def calc_wghtd_city_score(scores: dict, weights:dict):
     wgt_avg = 5.0
 
   wgt_avg = round(wgt_avg, 1)
-  print(f"returning: {wgt_avg}")
   return wgt_avg
   
