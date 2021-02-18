@@ -174,3 +174,35 @@ def gen_aq_score(db_conn, city):
     elif combined_aq <= buckets[5]:
         ret_val["score"] = 1
     return ret_val
+
+def calc_wghtd_city_score(scores: dict, weights:dict):
+  """
+  calc_wghtd_city_score calculates a weighted average of 
+  crime, walkability, air quality, and rent scores given
+  the user's preferred ranking or weighting (1-10) for 
+  each livability dimension
+  """
+  # calculate a weighted average score
+  numerator = float(scores["crime"])*float(weights["crime"]) + \
+                float(scores["walk"])*float(weights["walk"]) + \
+                float(scores["air"])*float(weights["air"])   + \
+                float(scores["rent"])*float(weights["rent"])
+
+  denominator = float(weights["crime"]) + \
+                float(weights["walk"])  + \
+                float(weights["air"])   + \
+                float(weights["rent"])
+
+  wgt_avg = numerator / denominator
+  print(f"calculated weighted average is {wgt_avg}")
+
+  # check for extreme values
+  if wgt_avg < 1.0:
+    wgt_avg = 1.0
+
+  if wgt_avg > 5.0:
+    wgt_avg = 5.0
+
+  wgt_avg = round(wgt_avg, 1)
+  return wgt_avg
+  
