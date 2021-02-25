@@ -1,0 +1,1161 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.4
+-- Dumped by pg_dump version 13.1
+
+-- Started on 2021-02-25 10:17:23 CST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3867 (class 1262 OID 16401)
+-- Name: cityspire-d-ds; Type: DATABASE; Schema: -; Owner: ds_cityspire
+--
+
+CREATE DATABASE "cityspire-d-ds" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.UTF-8';
+
+
+ALTER DATABASE "cityspire-d-ds" OWNER TO ds_cityspire;
+
+\connect -reuse-previous=on "dbname='cityspire-d-ds'"
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 208 (class 1259 OID 16473)
+-- Name: cityspire_air_quality; Type: TABLE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE TABLE public.cityspire_air_quality (
+    "City" text,
+    "State" text,
+    city_code text,
+    "PM2.5" double precision,
+    "O3" double precision,
+    "PM2.5 Scaled" double precision,
+    "O3 Scaled" double precision,
+    "Combined Total" double precision
+);
+
+
+ALTER TABLE public.cityspire_air_quality OWNER TO ds_cityspire;
+
+--
+-- TOC entry 207 (class 1259 OID 16439)
+-- Name: cityspire_cities; Type: TABLE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE TABLE public.cityspire_cities (
+    id integer NOT NULL,
+    city text,
+    state text,
+    city_code text,
+    state_name text,
+    population numeric,
+    active text
+);
+
+
+ALTER TABLE public.cityspire_cities OWNER TO ds_cityspire;
+
+--
+-- TOC entry 206 (class 1259 OID 16437)
+-- Name: cityspire_cities_id_seq; Type: SEQUENCE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE SEQUENCE public.cityspire_cities_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cityspire_cities_id_seq OWNER TO ds_cityspire;
+
+--
+-- TOC entry 3869 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: cityspire_cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ds_cityspire
+--
+
+ALTER SEQUENCE public.cityspire_cities_id_seq OWNED BY public.cityspire_cities.id;
+
+
+--
+-- TOC entry 203 (class 1259 OID 16416)
+-- Name: cityspire_crime; Type: TABLE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE TABLE public.cityspire_crime (
+    state text,
+    city text,
+    population bigint,
+    violent_crime bigint,
+    murder_nonnegligent_manslaughter bigint,
+    rape bigint,
+    robbery bigint,
+    aggravated_assault bigint,
+    property_crime bigint,
+    burglary bigint,
+    larceny_theft bigint,
+    motor_vehicle_theft bigint,
+    arson bigint,
+    state_abbr text,
+    id integer NOT NULL,
+    combined_scaled_rate numeric,
+    city_code text,
+    city_id integer
+);
+
+
+ALTER TABLE public.cityspire_crime OWNER TO ds_cityspire;
+
+--
+-- TOC entry 202 (class 1259 OID 16414)
+-- Name: cityspire_crime_id_seq; Type: SEQUENCE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE SEQUENCE public.cityspire_crime_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cityspire_crime_id_seq OWNER TO ds_cityspire;
+
+--
+-- TOC entry 3870 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: cityspire_crime_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ds_cityspire
+--
+
+ALTER SEQUENCE public.cityspire_crime_id_seq OWNED BY public.cityspire_crime.id;
+
+
+--
+-- TOC entry 211 (class 1259 OID 16491)
+-- Name: cityspire_rent; Type: TABLE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE TABLE public.cityspire_rent (
+    "City" text,
+    "State" text,
+    city_code text,
+    "Dec Avg Rent" double precision
+);
+
+
+ALTER TABLE public.cityspire_rent OWNER TO ds_cityspire;
+
+--
+-- TOC entry 210 (class 1259 OID 16481)
+-- Name: cityspire_score_weights; Type: TABLE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE TABLE public.cityspire_score_weights (
+    id integer NOT NULL,
+    score text NOT NULL,
+    document json NOT NULL
+);
+
+
+ALTER TABLE public.cityspire_score_weights OWNER TO ds_cityspire;
+
+--
+-- TOC entry 3871 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: TABLE cityspire_score_weights; Type: COMMENT; Schema: public; Owner: ds_cityspire
+--
+
+COMMENT ON TABLE public.cityspire_score_weights IS 'Table containing json documents describing the weights used to calculate a particular weighted average score';
+
+
+--
+-- TOC entry 209 (class 1259 OID 16479)
+-- Name: cityspire_score_weights_id_seq; Type: SEQUENCE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE SEQUENCE public.cityspire_score_weights_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cityspire_score_weights_id_seq OWNER TO ds_cityspire;
+
+--
+-- TOC entry 3872 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: cityspire_score_weights_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ds_cityspire
+--
+
+ALTER SEQUENCE public.cityspire_score_weights_id_seq OWNED BY public.cityspire_score_weights.id;
+
+
+--
+-- TOC entry 205 (class 1259 OID 16428)
+-- Name: cityspire_wlk_scr; Type: TABLE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE TABLE public.cityspire_wlk_scr (
+    id integer NOT NULL,
+    city_id integer,
+    state text,
+    city_code text,
+    walk_score integer
+);
+
+
+ALTER TABLE public.cityspire_wlk_scr OWNER TO ds_cityspire;
+
+--
+-- TOC entry 204 (class 1259 OID 16426)
+-- Name: cityspire_wlk_scr_id_seq; Type: SEQUENCE; Schema: public; Owner: ds_cityspire
+--
+
+CREATE SEQUENCE public.cityspire_wlk_scr_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cityspire_wlk_scr_id_seq OWNER TO ds_cityspire;
+
+--
+-- TOC entry 3873 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: cityspire_wlk_scr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ds_cityspire
+--
+
+ALTER SEQUENCE public.cityspire_wlk_scr_id_seq OWNED BY public.cityspire_wlk_scr.id;
+
+
+--
+-- TOC entry 3716 (class 2604 OID 16442)
+-- Name: cityspire_cities id; Type: DEFAULT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_cities ALTER COLUMN id SET DEFAULT nextval('public.cityspire_cities_id_seq'::regclass);
+
+
+--
+-- TOC entry 3714 (class 2604 OID 16419)
+-- Name: cityspire_crime id; Type: DEFAULT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_crime ALTER COLUMN id SET DEFAULT nextval('public.cityspire_crime_id_seq'::regclass);
+
+
+--
+-- TOC entry 3717 (class 2604 OID 16484)
+-- Name: cityspire_score_weights id; Type: DEFAULT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_score_weights ALTER COLUMN id SET DEFAULT nextval('public.cityspire_score_weights_id_seq'::regclass);
+
+
+--
+-- TOC entry 3715 (class 2604 OID 16431)
+-- Name: cityspire_wlk_scr id; Type: DEFAULT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_wlk_scr ALTER COLUMN id SET DEFAULT nextval('public.cityspire_wlk_scr_id_seq'::regclass);
+
+
+--
+-- TOC entry 3858 (class 0 OID 16473)
+-- Dependencies: 208
+-- Data for Name: cityspire_air_quality; Type: TABLE DATA; Schema: public; Owner: ds_cityspire
+--
+
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('New York City', 'NY', 'New_York_City', 11, 0.073, 5.917571590425548, 6.873882430295784, 12.791454020721332);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Los Angeles', 'CA', 'Los_Angeles', 11, 0.101, 5.917571590425548, 9.510440074792797, 15.428011665218346);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Chicago', 'IL', 'Chicago', 10.8, 0.071, 5.809979379690538, 6.685556884260283, 12.495536263950822);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Houston', 'TX', 'Houston', 10.7, 0.08100000000000002, 5.756183274323033, 7.627184614437789, 13.383367888760823);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Phoenix', 'AZ', 'Phoenix', 10.9, 0.076, 5.863775485058043, 7.156370749349035, 13.020146234407079);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Philadelphia', 'PA', 'Philadelphia', 9.8, 0.072, 5.2720183260154885, 6.779719657278033, 12.05173798329352);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('San Antonio', 'TX', 'San_Antonio', 8.9, 0.075, 4.787853377707943, 7.062207976331284, 11.850061354039227);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('San Diego', 'CA', 'San_Diego', 13.7, 0.076, 7.370066435348182, 7.156370749349035, 14.526437184697217);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Dallas', 'TX', 'Dallas', 9, 0.076, 4.841649483075448, 7.156370749349035, 11.998020232424484);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Austin', 'TX', 'Austin', 9.5, 0.065, 5.110630009912973, 6.12058024615378, 11.231210256066753);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('San Jose', 'CA', 'San_Jose', 9.1, 0.064, 4.895445588442953, 6.02641747313603, 10.921863061578982);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Fort Worth', 'TX', 'Fort_Worth', 9, 0.076, 4.841649483075448, 7.156370749349035, 11.998020232424484);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Jacksonville', 'FL', 'Jacksonville', 8.6, 0.065, 4.626465061605428, 6.12058024615378, 10.747045307759208);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Columbus', 'OH', 'Columbus', 9.7, 0.068, 5.2182222206479825, 6.4030685652070325, 11.621290785855015);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Charlotte', 'NC', 'Charlotte', 9.5, 0.074, 5.110630009912973, 6.968045203313534, 12.078675213226507);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Indianapolis', 'IN', 'Indianapolis', 12.6, 0.067, 6.778309276305627, 6.3089057921892815, 13.08721506849491);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('San Francisco', 'CA', 'San_Francisco', 9.4, 0.072, 5.056833904545468, 6.779719657278033, 11.8365535618235);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Seattle', 'WA', 'Seattle', 8.5, 0.05600000000000001, 4.572668956237924, 5.273115288994027, 9.84578424523195);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Denver', 'CO', 'Denver', 10, 0.078, 5.379610536750498, 7.344696295384536, 12.724306832135035);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Washington', 'DC', 'Washington', 9.1, 0.075, 4.895445588442953, 7.062207976331284, 11.957653564774237);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Boston', 'MA', 'Boston', 7.5, 0.065, 4.034707902562873, 6.12058024615378, 10.155288148716654);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('El Paso', 'TX', 'El_Paso', 8.5, 0.075, 4.572668956237924, 7.062207976331284, 11.634876932569208);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Nashville', 'TN', 'Nashville', 9.2, 0.066, 4.949241693810458, 6.214743019171531, 11.16398471298199);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Oklahoma City', 'OK', 'Oklahoma_City', 10, 0.066, 5.379610536750498, 6.214743019171531, 11.59435355592203);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Las Vegas', 'NV', 'Las_Vegas', 8, 0.07000000000000002, 4.303688429400398, 6.5913941112425345, 10.895082540642932);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Detroit', 'MI', 'Detroit', 12.1, 0.07000000000000002, 6.509328749468103, 6.5913941112425345, 13.100722860710636);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Portland', 'OR', 'Portland', 7, 0.065, 3.7657273757253487, 6.12058024615378, 9.88630762187913);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Memphis', 'TN', 'Memphis', 8.8, 0.07000000000000002, 4.734057272340439, 6.5913941112425345, 11.325451383582973);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Louisville', 'KY', 'Louisville', 10.5, 0.068, 5.6485910635880225, 6.4030685652070325, 12.051659628795054);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Milwaukee', 'WI', 'Milwaukee', 9.3, 0.068, 5.003037799177964, 6.4030685652070325, 11.406106364384996);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Baltimore', 'MD', 'Baltimore', 8.3, 0.077, 4.4650767455029134, 7.250533522366785, 11.7156102678697);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Albuquerque', 'NM', 'Albuquerque', 7.7, 0.069, 4.142300113297884, 6.497231338224783, 10.639531451522666);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Tucson', 'AZ', 'Tucson', 3.8, 0.065, 2.0442520039651892, 6.12058024615378, 8.16483225011897);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Mesa', 'AZ', 'Mesa', 10.9, 0.076, 5.863775485058043, 7.156370749349035, 13.020146234407079);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Fresno', 'CA', 'Fresno', 11.2, 0.08, 6.0251638011605575, 7.533021841420037, 13.558185642580595);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Sacramento', 'CA', 'Sacramento', 8.4, 0.079, 4.518872850870419, 7.438859068402286, 11.957731919272705);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Atlanta', 'GA', 'Atlanta', 10.8, 0.075, 5.809979379690538, 7.062207976331284, 12.872187356021822);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Kansas City', 'MO', 'Kansas_City', 7.6, 0.064, 4.0885040079303785, 6.02641747313603, 10.114921481066409);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Colorado Springs', 'CO', 'Colorado_Springs', 5, 0.065, 2.689805268375249, 6.12058024615378, 8.81038551452903);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Raleigh', 'NC', 'Raleigh', 8.9, 0.064, 4.787853377707943, 6.02641747313603, 10.814270850843974);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Omaha', 'NE', 'Omaha', 7.8, 0.062, 4.196096218665389, 5.838091927100529, 10.034188145765917);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Miami', 'FL', 'Miami', 8.9, 0.06, 4.787853377707943, 5.649766381065028, 10.437619758772971);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Long Beach', 'CA', 'Long_Beach', 11, 0.101, 5.917571590425548, 9.510440074792797, 15.428011665218346);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Virginia Beach', 'VA', 'Virginia_Beach', 7.1, 0.061, 3.8195234810928533, 5.743929154082778, 9.563452635175631);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Oakland', 'CA', 'Oakland', 9.4, 0.072, 5.056833904545468, 6.779719657278033, 11.8365535618235);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Minneapolis', 'MN', 'Minneapolis', 8, 0.062, 4.303688429400398, 5.838091927100529, 10.141780356500927);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Tampa', 'FL', 'Tampa', 7.7, 0.07000000000000002, 4.142300113297884, 6.5913941112425345, 10.733694224540418);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Tulsa', 'OK', 'Tulsa', 8.7, 0.066, 4.680261166972933, 6.214743019171531, 10.895004186144465);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Arlington', 'TX', 'Arlington', 9, 0.076, 4.841649483075448, 7.156370749349035, 11.998020232424484);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Wichita', 'KS', 'Wichita', 7.5, 0.062, 4.034707902562873, 5.838091927100529, 9.872799829663403);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Bakersfield', 'CA', 'Bakersfield', 13, 0.084, 6.993493697775648, 7.90967293349104, 14.903166631266688);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Aurora', 'CO', 'Aurora', 10, 0.078, 5.379610536750498, 7.344696295384536, 12.724306832135035);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('New Orleans', 'LA', 'New_Orleans', 7.8, 0.063, 4.196096218665389, 5.932254700118279, 10.128350918783667);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Cleveland', 'OH', 'Cleveland', 10.8, 0.071, 5.809979379690538, 6.685556884260283, 12.495536263950822);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Anaheim', 'CA', 'Anaheim', 11, 0.101, 5.917571590425548, 9.510440074792797, 15.428011665218346);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Henderson', 'NV', 'Henderson', 8, 0.07000000000000002, 4.303688429400398, 6.5913941112425345, 10.895082540642932);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Honolulu', 'HI', 'Honolulu', 3.9, 0.053000000000000005, 2.0980481093326944, 4.9906269699407755, 7.08867507927347);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Riverside', 'CA', 'Riverside', 12.8, 0.10600000000000002, 6.885901487040638, 9.981253939881551, 16.86715542692219);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Santa Ana', 'CA', 'Santa_Ana', 11, 0.101, 5.917571590425548, 9.510440074792797, 15.428011665218346);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Corpus Christi', 'TX', 'Corpus_Christi', 8.7, 0.062, 4.680261166972933, 5.838091927100529, 10.518353094073461);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Lexington', 'KY', 'Lexington', 8, 0.05899999999999998, 4.303688429400398, 5.555603608047276, 9.859292037447673);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('San Juan', 'PR', 'San_Juan', 7.5, 0.034, 4.034707902562873, 3.2015342826035162, 7.23624218516639);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Stockton', 'CA', 'Stockton', 9.3, 0.069, 5.003037799177964, 6.497231338224783, 11.500269137402746);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('St Paul', 'MN', 'St_Paul', 8, 0.062, 4.303688429400398, 5.838091927100529, 10.141780356500927);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Cincinnati', 'OH', 'Cincinnati', 11.9, 0.072, 6.4017365387330925, 6.779719657278033, 13.181456196011126);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Greensboro', 'NC', 'Greensboro', 6.8, 0.064, 3.6581351649903384, 6.02641747313603, 9.68455263812637);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Pittsburgh', 'PA', 'Pittsburgh', 12.2, 0.064, 6.563124854835607, 6.02641747313603, 12.589542327971637);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Irvine', 'CA', 'Irvine', 11, 0.101, 5.917571590425548, 9.510440074792797, 15.428011665218346);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('St Louis', 'MO', 'St_Louis', 10.5, 0.07000000000000002, 5.6485910635880225, 6.5913941112425345, 12.239985174830558);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Lincoln', 'NE', 'Lincoln', 6.5, 0.05600000000000001, 3.496746848887824, 5.273115288994027, 8.769862137881852);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Orlando', 'FL', 'Orlando', 6.9, 0.072, 3.711931270357844, 6.779719657278033, 10.491650927635877);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Durham', 'NC', 'Durham', 7.7, 0.063, 4.142300113297884, 5.932254700118279, 10.074554813416164);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Plano', 'TX', 'Plano', 9, 0.076, 4.841649483075448, 7.156370749349035, 11.998020232424484);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Anchorage', 'AK', 'Anchorage', 8.2, 0.07055102040816326, 4.411280640135408, 6.643279720864558, 11.054560360999966);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Newark', 'NJ', 'Newark', 11, 0.073, 5.917571590425548, 6.873882430295784, 12.791454020721332);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Chula Vista', 'CA', 'Chula_Vista', 13.7, 0.076, 7.370066435348182, 7.156370749349035, 14.526437184697217);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Fort Wayne', 'IN', 'Fort_Wayne', 9, 0.063, 4.841649483075448, 5.932254700118279, 10.773904183193729);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Chandler', 'AZ', 'Chandler', 10.9, 0.076, 5.863775485058043, 7.156370749349035, 13.020146234407079);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Toledo', 'OH', 'Toledo', 8.8, 0.065, 4.734057272340439, 6.12058024615378, 10.854637518494219);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('St Petersburg', 'FL', 'St_Petersburg', 7.7, 0.07000000000000002, 4.142300113297884, 6.5913941112425345, 10.733694224540418);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Reno', 'NV', 'Reno', 6, 0.066, 3.227766322050299, 6.214743019171531, 9.44250934122183);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Laredo', 'TX', 'Laredo', 10.7, 0.05899999999999998, 5.756183274323033, 5.555603608047276, 11.31178688237031);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Scottsdale', 'AZ', 'Scottsdale', 10.9, 0.076, 5.863775485058043, 7.156370749349035, 13.020146234407079);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('North Las Vegas', 'NV', 'North_Las_Vegas', 8, 0.07000000000000002, 4.303688429400398, 6.5913941112425345, 10.895082540642932);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Lubbock', 'TX', 'Lubbock', 6.4, 0.07055102040816326, 3.442950743520319, 6.643279720864558, 10.086230464384876);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Madison', 'WI', 'Madison', 8, 0.05899999999999998, 4.303688429400398, 5.555603608047276, 9.859292037447673);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Gilbert', 'AZ', 'Gilbert', 10.9, 0.076, 5.863775485058043, 7.156370749349035, 13.020146234407079);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Jersey City', 'NJ', 'Jersey_City', 11, 0.073, 5.917571590425548, 6.873882430295784, 12.791454020721332);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Glendale', 'AZ', 'Glendale', 10.9, 0.076, 5.863775485058043, 7.156370749349035, 13.020146234407079);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Buffalo', 'NY', 'Buffalo', 7, 0.063, 3.7657273757253487, 5.932254700118279, 9.697982075843628);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Winston-Salem', 'NC', 'Winston-Salem', 9.5, 0.065, 5.110630009912973, 6.12058024615378, 11.231210256066753);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Chesapeake', 'VA', 'Chesapeake', 7.1, 0.061, 3.8195234810928533, 5.743929154082778, 9.563452635175631);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Fremont', 'CA', 'Fremont', 9.1, 0.064, 4.895445588442953, 6.02641747313603, 10.921863061578982);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Norfolk', 'VA', 'Norfolk', 7.1, 0.061, 3.8195234810928533, 5.743929154082778, 9.563452635175631);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Irving', 'TX', 'Irving', 9, 0.076, 4.841649483075448, 7.156370749349035, 11.998020232424484);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Garland', 'TX', 'Garland', 9, 0.076, 4.841649483075448, 7.156370749349035, 11.998020232424484);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Paradise', 'NV', 'Paradise', 8, 0.07000000000000002, 4.303688429400398, 6.5913941112425345, 10.895082540642932);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Arlington', 'VA', 'Arlington', 9.1, 0.075, 4.895445588442953, 7.062207976331284, 11.957653564774237);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Richmond', 'VA', 'Richmond', 8.4, 0.064, 4.518872850870419, 6.02641747313603, 10.545290324006448);
+INSERT INTO public.cityspire_air_quality ("City", "State", city_code, "PM2.5", "O3", "PM2.5 Scaled", "O3 Scaled", "Combined Total") VALUES ('Hialeah', 'FL', 'Hialeah', 8.9, 0.06, 4.787853377707943, 5.649766381065028, 10.437619758772971);
+
+
+--
+-- TOC entry 3857 (class 0 OID 16439)
+-- Dependencies: 207
+-- Data for Name: cityspire_cities; Type: TABLE DATA; Schema: public; Owner: ds_cityspire
+--
+
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (1, 'New York City', 'NY', 'New_York_City', 'New York', 8230290, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (2, 'Los Angeles', 'CA', 'Los_Angeles', 'California', 3983540, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (3, 'Chicago', 'IL', 'Chicago', 'Illinois', 2679080, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (4, 'Houston', 'TX', 'Houston', 'Texas', 2323660, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (5, 'Phoenix', 'AZ', 'Phoenix', 'Arizona', 1733630, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (6, 'Philadelphia', 'PA', 'Philadelphia', 'Pennsylvania', 1585010, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (7, 'San Antonio', 'TX', 'San_Antonio', 'Texas', 1581730, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (8, 'San Diego', 'CA', 'San_Diego', 'California', 1427720, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (9, 'Dallas', 'TX', 'Dallas', 'Texas', 1347120, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (10, 'Austin', 'TX', 'Austin', 'Texas', 1011790, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (11, 'San Jose', 'CA', 'San_Jose', 'California', 1009340, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (12, 'Fort Worth', 'TX', 'Fort_Worth', 'Texas', 942323, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (13, 'Jacksonville', 'FL', 'Jacksonville', 'Florida', 929647, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (14, 'Columbus', 'OH', 'Columbus', 'Ohio', 913921, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (15, 'Charlotte', 'NC', 'Charlotte', 'North Carolina', 912096, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (16, 'Indianapolis', 'IN', 'Indianapolis', 'Indiana', 887232, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (17, 'San Francisco', 'CA', 'San_Francisco', 'California', 883255, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (18, 'Seattle', 'WA', 'Seattle', 'Washington', 776555, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (19, 'Denver', 'CO', 'Denver', 'Colorado', 749103, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (20, 'Washington', 'DC', 'Washington', 'Washington, DC', 714153, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (21, 'Boston', 'MA', 'Boston', 'Massachusetts', 695506, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (22, 'El Paso', 'TX', 'El_Paso', 'Texas', 685434, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (23, 'Nashville', 'TN', 'Nashville', 'Tennessee', 678448, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (24, 'Oklahoma City', 'OK', 'Oklahoma_City', 'Oklahoma', 669347, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (25, 'Las Vegas', 'NV', 'Las_Vegas', 'Nevada', 667501, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (26, 'Detroit', 'MI', 'Detroit', 'Michigan', 664139, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (27, 'Portland', 'OR', 'Portland', 'Oregon', 662549, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (28, 'Memphis', 'TN', 'Memphis', 'Tennessee', 651011, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (29, 'Louisville', 'KY', 'Louisville', 'Kentucky', 615924, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (30, 'Milwaukee', 'WI', 'Milwaukee', 'Wisconsin', 587721, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (31, 'Baltimore', 'MD', 'Baltimore', 'Maryland', 575584, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (32, 'Albuquerque', 'NM', 'Albuquerque', 'New Mexico', 562281, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (33, 'Tucson', 'AZ', 'Tucson', 'Arizona', 554503, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (34, 'Mesa', 'AZ', 'Mesa', 'Arizona', 538146, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (35, 'Fresno', 'CA', 'Fresno', 'California', 537100, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (36, 'Sacramento', 'CA', 'Sacramento', 'California', 525398, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (37, 'Atlanta', 'GA', 'Atlanta', 'Georgia', 524067, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (38, 'Kansas City', 'MO', 'Kansas_City', 'Missouri', 501957, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (39, 'Colorado Springs', 'CO', 'Colorado_Springs', 'Colorado', 489529, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (40, 'Raleigh', 'NC', 'Raleigh', 'North Carolina', 483579, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (41, 'Omaha', 'NE', 'Omaha', 'Nebraska', 479978, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (42, 'Miami', 'FL', 'Miami', 'Florida', 478251, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (43, 'Long Beach', 'CA', 'Long_Beach', 'California', 456154, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (44, 'Virginia Beach', 'VA', 'Virginia_Beach', 'Virginia', 450224, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (45, 'Oakland', 'CA', 'Oakland', 'California', 440981, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (46, 'Minneapolis', 'MN', 'Minneapolis', 'Minnesota', 439012, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (47, 'Tampa', 'FL', 'Tampa', 'Florida', 404636, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (48, 'Tulsa', 'OK', 'Tulsa', 'Oklahoma', 402742, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (49, 'Arlington', 'TX', 'Arlington', 'Texas', 400316, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (50, 'Wichita', 'KS', 'Wichita', 'Kansas', 391352, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (51, 'Bakersfield', 'CA', 'Bakersfield', 'California', 389007, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (52, 'Aurora', 'CO', 'Aurora', 'Colorado', 388723, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (53, 'New Orleans', 'LA', 'New_Orleans', 'Louisiana', 388424, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (54, 'Cleveland', 'OH', 'Cleveland', 'Ohio', 376599, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (55, 'Anaheim', 'CA', 'Anaheim', 'California', 349699, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (56, 'Henderson', 'NV', 'Henderson', 'Nevada', 341531, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (57, 'Honolulu', 'HI', 'Honolulu', 'Hawaii', 341302, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (58, 'Riverside', 'CA', 'Riverside', 'California', 334772, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (59, 'Santa Ana', 'CA', 'Santa_Ana', 'California', 333130, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (60, 'Corpus Christi', 'TX', 'Corpus_Christi', 'Texas', 327144, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (61, 'Lexington', 'KY', 'Lexington', 'Kentucky', 324604, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (62, 'San Juan', 'PR', 'San_Juan', 'Puerto Rico', 323279, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (63, 'Stockton', 'CA', 'Stockton', 'California', 314835, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (64, 'St. Paul', 'MN', 'St_Paul', 'Minnesota', 310368, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (65, 'Cincinnati', 'OH', 'Cincinnati', 'Ohio', 307266, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (66, 'Greensboro', 'NC', 'Greensboro', 'North Carolina', 301094, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (67, 'Pittsburgh', 'PA', 'Pittsburgh', 'Pennsylvania', 299718, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (68, 'Irvine', 'CA', 'Irvine', 'California', 298739, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (69, 'St. Louis', 'MO', 'St_Louis', 'Missouri', 294890, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (70, 'Lincoln', 'NE', 'Lincoln', 'Nebraska', 293446, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (71, 'Orlando', 'FL', 'Orlando', 'Florida', 290520, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (72, 'Durham', 'NC', 'Durham', 'North Carolina', 287865, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (73, 'Plano', 'TX', 'Plano', 'Texas', 285537, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (74, 'Anchorage', 'AK', 'Anchorage', 'Alaska', 282958, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (75, 'Newark', 'NJ', 'Newark', 'New Jersey', 282529, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (76, 'Chula Vista', 'CA', 'Chula_Vista', 'California', 281838, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (77, 'Fort Wayne', 'IN', 'Fort_Wayne', 'Indiana', 276286, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (78, 'Chandler', 'AZ', 'Chandler', 'Arizona', 269123, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (79, 'Toledo', 'OH', 'Toledo', 'Ohio', 268609, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (80, 'St. Petersburg', 'FL', 'St_Petersburg', 'Florida', 267121, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (81, 'Reno', 'NV', 'Reno', 'Nevada', 266511, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (82, 'Laredo', 'TX', 'Laredo', 'Texas', 265761, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (83, 'Scottsdale', 'AZ', 'Scottsdale', 'Arizona', 265249, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (84, 'North Las Vegas', 'NV', 'North_Las_Vegas', 'Nevada', 265224, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (85, 'Lubbock', 'TX', 'Lubbock', 'Texas', 263648, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (86, 'Madison', 'WI', 'Madison', 'Wisconsin', 263332, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (87, 'Gilbert', 'AZ', 'Gilbert', 'Arizona', 262514, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (88, 'Jersey City', 'NJ', 'Jersey_City', 'New Jersey', 258523, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (89, 'Glendale', 'AZ', 'Glendale', 'Arizona', 257233, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (90, 'Buffalo', 'NY', 'Buffalo', 'New York', 254290, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (91, 'Winston-Salem', 'NC', 'WinstonSalem', 'North Carolina', 250765, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (92, 'Chesapeake', 'VA', 'Chesapeake', 'Virginia', 249787, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (93, 'Fremont', 'CA', 'Fremont', 'California', 247708, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (94, 'Norfolk', 'VA', 'Norfolk', 'Virginia', 241056, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (95, 'Irving', 'TX', 'Irving', 'Texas', 236546, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (96, 'Garland', 'TX', 'Garland', 'Texas', 236366, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (97, 'Paradise', 'NV', 'Paradise', 'Nevada', 235087, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (98, 'Arlington', 'VA', 'Arlington', 'Virginia', 233464, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (99, 'Richmond', 'VA', 'Richmond', 'Virginia', 232866, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (100, 'Hialeah', 'FL', 'Hialeah', 'Florida', 230135, 'yes');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (101, 'Boise', 'ID', 'Boise', 'Idaho', 229993, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (102, 'Spokane', 'WA', 'Spokane', 'Washington', 227579, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (103, 'Frisco', 'TX', 'Frisco', 'Texas', 224566, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (104, 'Moreno Valley', 'CA', 'Moreno_Valley', 'California', 221387, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (105, 'Tacoma', 'WA', 'Tacoma', 'Washington', 221259, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (106, 'Fontana', 'CA', 'Fontana', 'California', 217237, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (107, 'Modesto', 'CA', 'Modesto', 'California', 216810, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (108, 'Baton Rouge', 'LA', 'Baton_Rouge', 'Louisiana', 216328, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (109, 'Port St. Lucie', 'FL', 'Port_St_Lucie', 'Florida', 215922, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (110, 'San Bernardino', 'CA', 'San_Bernardino', 'California', 214706, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (111, 'McKinney', 'TX', 'McKinney', 'Texas', 214035, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (112, 'Fayetteville', 'NC', 'Fayetteville', 'North Carolina', 213475, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (113, 'Santa Clarita', 'CA', 'Santa_Clarita', 'California', 211839, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (114, 'Des Moines', 'IA', 'Des_Moines', 'Iowa', 210723, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (115, 'Oxnard', 'CA', 'Oxnard', 'California', 208101, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (116, 'Birmingham', 'AL', 'Birmingham', 'Alabama', 207235, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (117, 'Spring Valley', 'NV', 'Spring_Valley', 'Nevada', 207127, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (118, 'Huntsville', 'AL', 'Huntsville', 'Alabama', 205472, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (119, 'Rochester', 'NY', 'Rochester', 'New York', 205077, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (120, 'Cape Coral', 'FL', 'Cape_Coral', 'Florida', 204549, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (121, 'Tempe', 'AZ', 'Tempe', 'Arizona', 203923, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (122, 'Grand Rapids', 'MI', 'Grand_Rapids', 'Michigan', 202767, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (123, 'Yonkers', 'NY', 'Yonkers', 'New York', 201344, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (124, 'Overland Park', 'KS', 'Overland_Park', 'Kansas', 201034, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (125, 'Salt Lake City', 'UT', 'Salt_Lake_City', 'Utah', 200831, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (126, 'Amarillo', 'TX', 'Amarillo', 'Texas', 199747, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (127, 'Augusta', 'GA', 'Augusta', 'Georgia', 199614, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (128, 'Columbus', 'GA', 'Columbus', 'Georgia', 198969, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (129, 'Tallahassee', 'FL', 'Tallahassee', 'Florida', 197974, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (130, 'Montgomery', 'AL', 'Montgomery', 'Alabama', 197777, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (131, 'Huntington Beach', 'CA', 'Huntington_Beach', 'California', 197417, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (132, 'Akron', 'OH', 'Akron', 'Ohio', 197023, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (133, 'Little Rock', 'AR', 'Little_Rock', 'Arkansas', 196968, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (134, 'Glendale', 'CA', 'Glendale', 'California', 196533, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (135, 'Grand Prairie', 'TX', 'Grand_Prairie', 'Texas', 195651, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (136, 'Aurora', 'IL', 'Aurora', 'Illinois', 194873, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (137, 'Sunrise Manor', 'NV', 'Sunrise_Manor', 'Nevada', 193781, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (138, 'Ontario', 'CA', 'Ontario', 'California', 193594, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (139, 'Sioux Falls', 'SD', 'Sioux_Falls', 'South Dakota', 190583, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (140, 'Knoxville', 'TN', 'Knoxville', 'Tennessee', 188085, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (141, 'Vancouver', 'WA', 'Vancouver', 'Washington', 187615, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (142, 'Mobile', 'AL', 'Mobile', 'Alabama', 186542, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (143, 'Worcester', 'MA', 'Worcester', 'Massachusetts', 185174, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (144, 'Chattanooga', 'TN', 'Chattanooga', 'Tennessee', 184561, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (145, 'Brownsville', 'TX', 'Brownsville', 'Texas', 183677, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (146, 'Peoria', 'AZ', 'Peoria', 'Arizona', 183357, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (147, 'Fort Lauderdale', 'FL', 'Fort_Lauderdale', 'Florida', 183109, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (148, 'Shreveport', 'LA', 'Shreveport', 'Louisiana', 182616, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (149, 'Newport News', 'VA', 'Newport_News', 'Virginia', 180629, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (150, 'Providence', 'RI', 'Providence', 'Rhode Island', 180609, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (151, 'Elk Grove', 'CA', 'Elk_Grove', 'California', 179119, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (152, 'Rancho Cucamonga', 'CA', 'Rancho_Cucamonga', 'California', 178119, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (153, 'Salem', 'OR', 'Salem', 'Oregon', 177803, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (154, 'Pembroke Pines', 'FL', 'Pembroke_Pines', 'Florida', 176823, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (155, 'Santa Rosa', 'CA', 'Santa_Rosa', 'California', 176759, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (156, 'Eugene', 'OR', 'Eugene', 'Oregon', 176464, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (157, 'Oceanside', 'CA', 'Oceanside', 'California', 175710, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (158, 'Cary', 'NC', 'Cary', 'North Carolina', 174762, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (159, 'Fort Collins', 'CO', 'Fort_Collins', 'Colorado', 174081, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (160, 'Corona', 'CA', 'Corona', 'California', 172652, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (161, 'Enterprise', 'NV', 'Enterprise', 'Nevada', 171108, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (162, 'Garden Grove', 'CA', 'Garden_Grove', 'California', 170542, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (163, 'Springfield', 'MO', 'Springfield', 'Missouri', 168568, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (164, 'Clarksville', 'TN', 'Clarksville', 'Tennessee', 161686, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (165, 'Bayamon', 'PR', 'Bayamon', 'Puerto Rico', 161034, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (166, 'Lakewood', 'CO', 'Lakewood', 'Colorado', 160441, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (167, 'Alexandria', 'VA', 'Alexandria', 'Virginia', 160146, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (168, 'Hayward', 'CA', 'Hayward', 'California', 158089, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (169, 'Murfreesboro', 'TN', 'Murfreesboro', 'Tennessee', 157816, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (170, 'Killeen', 'TX', 'Killeen', 'Texas', 157632, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (171, 'Hollywood', 'FL', 'Hollywood', 'Florida', 155689, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (172, 'Lancaster', 'CA', 'Lancaster', 'California', 155559, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (173, 'Salinas', 'CA', 'Salinas', 'California', 155101, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (174, 'Jackson', 'MS', 'Jackson', 'Mississippi', 154340, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (175, 'Midland', 'TX', 'Midland', 'Texas', 153768, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (176, 'Macon County', 'GA', 'Macon_County', 'Georgia', 153671, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (177, 'Kansas City', 'KS', 'Kansas_City', 'Kansas', 152950, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (178, 'Palmdale', 'CA', 'Palmdale', 'California', 152921, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (179, 'Sunnyvale', 'CA', 'Sunnyvale', 'California', 152495, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (180, 'Springfield', 'MA', 'Springfield', 'Massachusetts', 152160, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (181, 'Escondido', 'CA', 'Escondido', 'California', 151289, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (182, 'Pomona', 'CA', 'Pomona', 'California', 151223, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (183, 'Bellevue', 'WA', 'Bellevue', 'Washington', 150364, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (184, 'Surprise', 'AZ', 'Surprise', 'Arizona', 149558, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (185, 'Naperville', 'IL', 'Naperville', 'Illinois', 149167, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (186, 'Pasadena', 'TX', 'Pasadena', 'Texas', 148215, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (187, 'Denton', 'TX', 'Denton', 'Texas', 147993, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (188, 'Roseville', 'CA', 'Roseville', 'California', 146594, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (189, 'Joliet', 'IL', 'Joliet', 'Illinois', 146572, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (190, 'Thornton', 'CO', 'Thornton', 'Colorado', 145688, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (191, 'McAllen', 'TX', 'McAllen', 'Texas', 144744, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (192, 'Paterson', 'NJ', 'Paterson', 'New Jersey', 144511, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (193, 'Rockford', 'IL', 'Rockford', 'Illinois', 144213, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (194, 'Carrollton', 'TX', 'Carrollton', 'Texas', 143718, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (195, 'Bridgeport', 'CT', 'Bridgeport', 'Connecticut', 143653, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (196, 'Miramar', 'FL', 'Miramar', 'Florida', 142445, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (197, 'Round Rock', 'TX', 'Round_Rock', 'Texas', 142418, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (198, 'Metairie', 'LA', 'Metairie', 'Louisiana', 142135, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (199, 'Olathe', 'KS', 'Olathe', 'Kansas', 142119, 'no');
+INSERT INTO public.cityspire_cities (id, city, state, city_code, state_name, population, active) VALUES (200, 'Waco', 'TX', 'Waco', 'Texas', 141936, 'no');
+
+
+--
+-- TOC entry 3853 (class 0 OID 16416)
+-- Dependencies: 203
+-- Data for Name: cityspire_crime; Type: TABLE DATA; Schema: public; Owner: ds_cityspire
+--
+
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Los Angeles', 4015546, 29400, 258, 2274, 9652, 17216, 95704, 13809, 66253, 15642, 1672, 'CA', 8407, 0.31026864, 'Los_Angeles', 2);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ILLINOIS', 'Chicago', 2707064, 25532, 492, 1761, 7983, 15296, 80742, 9578, 62083, 9081, 416, 'IL', 8408, 0.426287858, 'Chicago', 3);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Houston', 2355606, 25257, 275, 1249, 9147, 14586, 101750, 17038, 71614, 13098, 485, 'TX', 8409, 0.575239302, 'Houston', 4);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ARIZONA', 'Phoenix', 1688722, 11803, 131, 1139, 3197, 7336, 55974, 9471, 39427, 7076, 201, 'AZ', 8410, 0.374441925, 'Phoenix', 5);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEVADA', 'Las Vegas', 1666803, 8854, 84, 1439, 2118, 5213, 46197, 10646, 28240, 7311, 125, 'NV', 8411, 0.276863512, 'Las_Vegas', 25);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'San Antonio', 1559166, 11046, 105, 1630, 1965, 7346, 67422, 8172, 51469, 7781, 181, 'TX', 8412, 0.45866351, 'San_Antonio', 7);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'San Diego', 1441737, 5215, 50, 561, 1346, 3258, 27141, 3543, 18426, 5172, 122, 'CA', 8413, 0.15090426, 'San_Diego', 8);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Dallas', 1363295, 11764, 198, 797, 4400, 6369, 45279, 9210, 25812, 10257, 144, 'TX', 8414, 0.427705786, 'Dallas', 9);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'San Jose', 1040008, 4559, 32, 671, 1339, 2517, 25164, 4114, 14924, 6126, 135, 'CA', 8415, 0.218719854, 'San_Jose', 11);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Austin', 986062, 3953, 32, 534, 971, 2416, 36588, 4344, 29216, 3028, 103, 'TX', 8416, 0.310438439, 'Austin', 10);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('HAWAII', 'Honolulu', 974902, 2638, 27, 340, 954, 1317, 29263, 3864, 21562, 3837, 272, 'HI', 8417, 0.211562202, 'Honolulu', 57);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NORTH CAROLINA', 'Charlotte', 944260, 6982, 103, 317, 1975, 4587, 37070, 5426, 28304, 3340, 151, 'NC', 8418, 0.436592639, 'Charlotte', 15);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Fort Worth', 915237, 4068, 69, 470, 972, 2557, 24605, 3969, 17301, 3335, 85, 'TX', 8419, 0.242290502, 'Fort_Worth', 12);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('FLORIDA', 'Jacksonville', 909142, 5886, 129, 554, 1294, 3909, 30088, 4906, 22373, 2809, 82, 'FL', 8420, 0.357472098, 'Jacksonville', 13);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('OHIO', 'Columbus', 906120, 4561, 81, 882, 1810, 1788, 29974, 5809, 20606, 3559, NULL, 'OH', 8421, 0.311025456, 'Columbus', 128);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'San Francisco', 886007, 5933, 40, 324, 3055, 2514, 48780, 4644, 39887, 4249, 275, 'CA', 8422, 0.541142396, 'San_Francisco', 17);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('WASHINGTON', 'Seattle', 763706, 4471, 28, 358, 1339, 2746, 34333, 7210, 23478, 3645, 98, 'WA', 8423, 0.432881486, 'Seattle', 18);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('COLORADO', 'Denver', 728941, 5459, 67, 713, 1205, 3474, 27288, 3967, 18027, 5294, 107, 'CO', 8424, 0.424985837, 'Denver', 19);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('DISTRICT OF COLUMBIA', 'Washington', 705749, 6896, 166, 342, 2359, 4029, 29965, 1840, 25827, 2298, NULL, 'DC', 8425, 0.538745502, 'Washington', 20);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('MASSACHUSETTS', 'Boston5,', 698941, 4244, 42, 231, 1039, 2932, NULL, 1703, 10590, NULL, NULL, 'MA', 8426, 0.252564887, 'Boston', 21);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TENNESSEE', 'Nashville', 687361, 7376, 83, 438, 1978, 4877, 27777, 3374, 21655, 2748, 60, 'TN', 8427, 0.553146176, 'Nashville', 23);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'El Paso', 686793, 2422, 40, 310, 338, 1734, 10378, 1048, 8479, 851, 29, 'TX', 8428, 0.118132901, 'El_Paso', 22);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('KENTUCKY', 'Louisville', 675501, 4640, 94, 201, 1008, 3337, 26287, 4316, 18037, 3934, 7, 'KY', 8429, 0.416946028, 'Louisville', 29);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('MICHIGAN', 'Detroit', 663502, 13040, 275, 952, 2346, 9467, 28550, 6820, 14844, 6886, 789, 'MI', 8430, 0.86107472, 'Detroit', 26);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('OREGON', 'Portland', 662114, 3606, 29, 368, 979, 2230, 34452, 4200, 23820, 6432, 252, 'OR', 8431, 0.476649385, 'Portland', 27);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('OKLAHOMA', 'Oklahoma City', 657890, 4751, 75, 539, 888, 3249, 26918, 6206, 16922, 3790, 96, 'OK', 8432, 0.44436636, 'Oklahoma_City', 24);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TENNESSEE', 'Memphis', 650410, 12367, 190, 468, 2432, 9277, 39860, 7833, 27981, 4046, 336, 'TN', 8433, 0.987264651, 'Memphis', 28);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('MARYLAND', 'Baltimore', 597239, 11101, 348, 324, 4856, 5573, 25748, 5414, 16395, 3939, 108, 'MD', 8434, 0.82745926, 'Baltimore', 31);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('WISCONSIN', 'Milwaukee', 590923, 7874, 97, 427, 1911, 5439, 15097, 3594, 8053, 3450, 198, 'WI', 8435, 0.517079779, 'Milwaukee', 30);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEW MEXICO', 'Albuquerque', 561920, 7596, 84, 486, 1699, 5327, NULL, NULL, 20634, 5425, 98, 'NM', 8436, 0.862572199, 'Albuquerque', 32);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ARIZONA', 'Tucson', 548374, 3775, 40, 527, 1105, 2103, 17943, 2497, 13196, 2250, 142, 'AZ', 8437, 0.367635993, 'Tucson', 33);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ARIZONA', 'Mesa', 518160, 1953, 11, 286, 390, 1266, 9683, 1518, 7326, 839, 27, 'AZ', 8438, 0.154680927, 'Mesa', 34);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Sacramento', 513934, 3223, 34, 127, 1039, 2023, 16354, 2993, 10644, 2717, 179, 'CA', 8439, 0.340706298, 'Sacramento', 36);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('MISSOURI', 'Kansas City', 495964, 7099, 150, 347, 1443, 5159, 19124, 3070, 12253, 3801, 160, 'MO', 8440, 0.653453762, 'Kansas_City', 177);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('FLORIDA', 'Miami', 480505, 2850, 43, 152, 769, 1886, 17624, 1771, 14219, 1634, 37, 'FL', 8441, 0.368815982, 'Miami', 42);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('COLORADO', 'Colorado Springs', 479648, 2806, 23, 431, 485, 1867, 17587, 2400, 12095, 3092, 115, 'CO', 8442, 0.3661139, 'Colorado_Springs', 39);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NORTH CAROLINA', 'Raleigh', 477828, 1222, 5, 164, 322, 731, 8520, 1200, 6572, 748, 36, 'NC', 8443, 0.108835437, 'Raleigh', 40);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEBRASKA', 'Omaha', 470481, 2883, 23, 379, 519, 1962, 17144, 1684, 12307, 3153, NULL, 'NE', 8444, 0.373215103, 'Omaha', 41);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Long Beach', 467974, 2369, 34, 249, 958, 1128, 11297, 2185, 6754, 2358, 153, 'CA', 8445, 0.240091789, 'Long_Beach', 43);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('VIRGINIA', 'Virginia Beach', 449038, 581, 30, 79, 196, 276, 7906, 530, 6797, 579, 34, 'VA', 8446, 0.06640723, 'Virginia_Beach', 44);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Oakland', 434036, 5520, 78, 372, 2859, 2211, 27868, 2599, 20228, 5041, 207, 'CA', 8447, 0.808308043, 'Oakland', 45);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('MINNESOTA', 'Minneapolis', 431016, 3990, 46, 459, 1289, 2196, 19469, 3397, 13172, 2900, 75, 'MN', 8448, 0.544015798, 'Minneapolis', 46);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Arlington', 402304, 2055, 16, 241, 402, 1396, 11291, 1305, 8738, 1248, 14, 'TX', 8449, 0.273120535, 'Arlington', 98);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('OKLAHOMA', 'Tulsa', 401700, 3964, 55, 341, 718, 2850, 21336, 4846, 13457, 3033, 209, 'OK', 8450, 0.627515051, 'Tulsa', 48);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('FLORIDA', 'Tampa', 400501, 1622, 31, 120, 285, 1186, 6523, 1022, 4978, 523, 38, 'FL', 8451, 0.144416912, 'Tampa', 47);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('LOUISIANA', 'New Orleans', 394498, 4516, 121, 774, 1013, 2608, 20879, 2143, 15785, 2951, NULL, 'LA', 8452, 0.676780233, 'New_Orleans', 53);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('KANSAS', 'Wichita', 390080, 4451, 35, 367, 461, 3588, 20759, 2677, 15777, 2305, 125, 'KS', 8453, 0.677936773, 'Wichita', 50);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Bakersfield', 388080, 1766, 34, 116, 701, 915, 16074, 3888, 9277, 2909, 470, 'CA', 8454, 0.36253495, 'Bakersfield', 51);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('OHIO', 'Cleveland', 381829, 5791, 92, 479, 1895, 3325, 17057, 4311, 9968, 2778, 157, 'OH', 8455, 0.730012935, 'Cleveland', 54);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('COLORADO', 'Aurora', 380600, 2799, 28, 438, 638, 1695, 11106, 1554, 7258, 2294, 104, 'CO', 8456, 0.35429752, 'Aurora', 136);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Anaheim', 353915, 1120, 8, 141, 396, 575, 8258, 1123, 5904, 1231, 44, 'CA', 8457, 0.172590137, 'Anaheim', 55);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Santa Ana', 333664, 1453, 13, 207, 472, 761, 6808, 854, 4611, 1343, 49, 'CA', 8458, 0.187306515, 'Santa_Ana', 59);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Riverside', 333260, 1686, 17, 139, 476, 1054, 9790, 1302, 6997, 1491, 75, 'CA', 8459, 0.282081321, 'Riverside', 58);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Corpus Christi', 329320, 2616, 31, 266, 496, 1823, 11347, 1961, 8494, 892, 73, 'TX', 8460, 0.415657418, 'Corpus_Christi', 60);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('KENTUCKY', 'Lexington', 326070, 967, 26, 175, 362, 404, 9776, 1537, 7333, 906, 43, 'KY', 8461, 0.219630813, 'Lexington', 61);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEVADA', 'Henderson', 317732, 543, 9, 75, 191, 268, 5554, 907, 4093, 554, 19, 'NV', 8462, 0.078738384, 'Henderson', 56);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Stockton', 313604, 4380, 34, 181, 1158, 3007, 12367, 2209, 8480, 1678, 128, 'CA', 8463, 0.649340673, 'Stockton', 63);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('MINNESOTA', 'St. Paul', 310263, 1752, 28, 236, 542, 946, 11208, 2038, 6751, 2419, 118, 'MN', 8464, 0.355218129, 'St_Paul', 64);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('OHIO', 'Cincinnati', 303335, 2562, 64, 280, 872, 1346, 13051, 2765, 8935, 1351, NULL, 'OH', 8465, 0.500694806, 'Cincinnati', 65);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('MISSOURI', 'St. Louis', 300521, 5792, 194, 265, 1475, 3858, 18582, 3044, 12540, 2998, 169, 'MO', 8466, 1, 'St_Louis', 69);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NORTH CAROLINA', 'Greensboro', 298025, 2440, 43, 113, 621, 1663, 10994, 2215, 7792, 987, 90, 'NC', 8467, 0.443052187, 'Greensboro', 66);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Irvine', 292673, 188, 1, 52, 66, 69, 3823, 574, 3086, 163, 9, 'CA', 8468, 0.008931476, 'Irvine', 68);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('FLORIDA', 'Orlando', 292120, 2157, 25, 204, 536, 1392, 14100, 1464, 11362, 1274, 15, 'FL', 8469, 0.508686256, 'Orlando', 71);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Plano', 291611, 431, 3, 90, 144, 194, 4908, 630, 3831, 447, 14, 'TX', 8470, 0.066090442, 'Plano', 73);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEBRASKA', 'Lincoln', 291128, 1115, 5, 323, 166, 621, 8008, 988, 6566, 454, NULL, 'NE', 8471, 0.227530409, 'Lincoln', 70);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ALASKA', 'Anchorage', 287731, 3581, 32, 540, 621, 2388, 12261, 1692, 9038, 1531, 93, 'AK', 8472, 0.625978295, 'Anchorage', 74);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEW JERSEY', 'Newark', 281422, 1742, 57, 120, 636, 929, 4618, 721, 2356, 1541, 21, 'NJ', 8473, 0.214210709, 'Newark', 75);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NORTH CAROLINA', 'Durham', 280282, 2046, 37, 121, 626, 1262, 10672, 1972, 7942, 758, 39, 'NC', 8474, 0.424054907, 'Durham', 72);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Chula Vista', 275230, 904, 3, 61, 265, 575, 3816, 486, 2503, 827, 36, 'CA', 8475, 0.100335472, 'Chula_Vista', 76);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('OHIO', 'Toledo', 273505, 2604, 34, 205, 655, 1710, 9470, 2362, 6314, 794, NULL, 'OH', 8476, 0.467726016, 'Toledo', 79);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('INDIANA', 'Fort Wayne', 269366, 974, 26, 145, 357, 446, 7437, 990, 5879, 568, 49, 'IN', 8477, 0.221472315, 'Fort_Wayne', 77);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('FLORIDA', 'St. Petersburg', 267696, 1594, 17, 125, 297, 1155, 8592, 1044, 6765, 783, 27, 'FL', 8478, 0.332732579, 'St_Petersburg', 80);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEW JERSEY', 'Jersey City', 266508, 1393, 13, 81, 431, 868, 5074, 890, 3514, 670, 18, 'NJ', 8479, 0.204378116, 'Jersey_City', 88);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Laredo', 264916, 836, 4, 104, 164, 564, 4692, 708, 3726, 258, 39, 'TX', 8480, 0.127113177, 'Laredo', 82);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('WISCONSIN', 'Madison', 261270, 940, 4, 107, 217, 612, 6464, 1046, 4873, 545, 9, 'WI', 8481, 0.197832259, 'Madison', 86);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ARIZONA', 'Scottsdale', 260464, 415, 3, 136, 110, 166, 5099, 662, 4173, 264, 15, 'AZ', 8482, 0.091870948, 'Scottsdale', 83);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ARIZONA', 'Chandler', 259881, 593, 4, 134, 102, 353, 5382, 547, 4458, 377, 19, 'AZ', 8483, 0.123114851, 'Chandler', 78);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Lubbock', 259208, 2613, 10, 268, 468, 1867, 11940, 2391, 8324, 1225, 85, 'TX', 8484, 0.577675432, 'Lubbock', 85);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEW YORK', 'Buffalo', 255686, 2533, 47, 121, 802, 1563, 8298, 1610, 6009, 679, 143, 'NY', 8485, 0.462682835, 'Buffalo', 90);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEVADA', 'Reno', 254349, 1419, 12, 178, 308, 921, 5344, 822, 3343, 1179, 15, 'NV', 8486, 0.231547722, 'Reno', 81);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ARIZONA', 'Glendale', 253951, 863, 17, 63, 233, 550, 8083, 1416, 5857, 810, NULL, 'AZ', 8487, 0.24839477, 'Glendale', 134);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('ARIZONA', 'Gilbert', 253619, 245, 1, 48, 45, 151, 3050, 403, 2493, 154, 11, 'AZ', 8488, 0.011006932, 'Gilbert', 87);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEVADA', 'North Las Vegas', 249854, 2158, 18, 118, 457, 1565, 5086, 1200, 2773, 1113, NULL, 'NV', 8489, 0.324613054, 'North_Las_Vegas', 84);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Irving', 245423, 617, 5, 56, 294, 262, 5982, 719, 4552, 711, 16, 'TX', 8490, 0.160039634, 'Irving', 95);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('TEXAS', 'Garland', 244277, 738, 11, 139, 250, 338, 6311, 1003, 4337, 971, 9, 'TX', 8491, 0.188090939, 'Garland', 96);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('VIRGINIA', 'Chesapeake', 243726, 1112, 7, 111, 139, 855, 5541, 510, 4641, 390, 12, 'VA', 8492, 0.212724102, 'Chesapeake', 92);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('VIRGINIA', 'Norfolk', 242813, 1325, 36, 134, 311, 844, 8405, 841, 6765, 799, 8, 'VA', 8493, 0.336980334, 'Norfolk', 94);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Fremont', 240887, 400, 1, 36, 159, 204, 4523, 547, 3408, 568, 17, 'CA', 8494, 0.087600322, 'Fremont', 93);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('FLORIDA', 'Hialeah', 240688, 503, 6, 30, 159, 308, 4893, 342, 3985, 566, 11, 'FL', 8495, 0.113885779, 'Hialeah', 100);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('IDAHO', 'Boise', 231314, 649, 4, 164, 44, 437, 3653, 470, 2952, 231, 23, 'ID', 8496, 0.100434791, 'Boise', 101);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('VIRGINIA', 'Richmond', 230721, 1068, 55, 45, 385, 583, 8074, 986, 6234, 854, 44, 'VA', 8497, 0.313411335, 'Richmond', 99);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('LOUISIANA', 'Baton Rouge', 220648, 2066, 70, 52, 645, 1299, 11673, 2258, 8616, 799, 133, 'LA', 8498, 0.609590321, 'Baton_Rouge', 108);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('WASHINGTON', 'Spokane', 220432, 1520, 6, 230, 311, 973, 13048, 1743, 10026, 1279, 45, 'WA', 8499, 0.580801014, 'Spokane', 102);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('WASHINGTON', 'Tacoma', 218650, 1848, 16, 160, 422, 1250, 11415, 1768, 8021, 1626, 91, 'WA', 8500, 0.574684833, 'Tacoma', 105);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('IOWA', 'Des Moines', 218384, 1555, 14, 117, 283, 1141, 8933, 2284, 5336, 1313, 53, 'IA', 8501, 0.441030546, 'Des_Moines', 114);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Santa Clarita', 218103, 277, 2, 49, 89, 137, 2059, 392, 1448, 219, 17, 'CA', 8502, 0, 'Santa_Clarita', 113);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'San Bernardino', 216715, 2858, 46, 140, 906, 1766, 9081, 2029, 4974, 2078, 75, 'CA', 8503, 0.6441363, 'San_Bernardino', 110);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Modesto', 216542, 1758, 13, 94, 399, 1252, 7183, 1149, 4849, 1185, 95, 'CA', 8504, 0.410955423, 'Modesto', 107);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('CALIFORNIA', 'Fontana', 215883, 739, 6, 83, 206, 444, 3094, 483, 1846, 765, 9, 'CA', 8505, 0.108547128, 'Fontana', 106);
+INSERT INTO public.cityspire_crime (state, city, population, violent_crime, murder_nonnegligent_manslaughter, rape, robbery, aggravated_assault, property_crime, burglary, larceny_theft, motor_vehicle_theft, arson, state_abbr, id, combined_scaled_rate, city_code, city_id) VALUES ('NEW YORK', 'New York', 8379043, 47821, 319, 2770, 13396, 31336, 122299, 9846, 106931, 5522, NULL, 'NY', 8406, 0.184108884, 'New_York_City', 1);
+
+
+--
+-- TOC entry 3861 (class 0 OID 16491)
+-- Dependencies: 211
+-- Data for Name: cityspire_rent; Type: TABLE DATA; Schema: public; Owner: ds_cityspire
+--
+
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('United States', 'United States', 'United_States', 1747);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('New York City', 'NY', 'New_York_City', 2584);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Los Angeles', 'CA', 'Los_Angeles', 2562);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Chicago', 'IL', 'Chicago', 1738);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Dallas', 'TX', 'Dallas', 1593);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Philadelphia', 'PA', 'Philadelphia', 1621);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Houston', 'TX', 'Houston', 1488);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Washington', 'DC', 'Washington', 2079);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Miami', 'FL', 'Miami', 1939);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Atlanta', 'GA', 'Atlanta', 1613);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Boston', 'MA', 'Boston', 2346);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('San Francisco', 'CA', 'San_Francisco', 2993);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Detroit', 'MI', 'Detroit', 1333);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Riverside', 'CA', 'Riverside', 2156);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Phoenix', 'AZ', 'Phoenix', 1549);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Seattle', 'WA', 'Seattle', 1930);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Minneapolis', 'MN', 'Minneapolis', 1577);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('San Diego', 'CA', 'San_Diego', 2381);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('St. Louis', 'MO', 'St_Louis', 1169);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Tampa', 'FL', 'Tampa', 1588);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Baltimore', 'MD', 'Baltimore', 1710);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Denver', 'CO', 'Denver', 1769);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Pittsburgh', 'PA', 'Pittsburgh', 1180);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Portland', 'OR', 'Portland', 1675);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Charlotte', 'NC', 'Charlotte', 1530);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Sacramento', 'CA', 'Sacramento', 1927);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('San Antonio', 'TX', 'San_Antonio', 1349);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Orlando', 'FL', 'Orlando', 1622);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Cincinnati', 'OH', 'Cincinnati', 1307);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Cleveland', 'OH', 'Cleveland', 1176);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Kansas City', 'MO', 'Kansas_City', 1244);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('North Las Vegas', 'NV', 'North_Las_Vegas', 1476);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Columbus', 'OH', 'Columbus', 1346);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Indianapolis', 'IN', 'Indianapolis', 1336);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('San Jose', 'CA', 'San_Jose', 2960);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Austin', 'TX', 'Austin', 1541);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Virginia Beach', 'VA', 'Virginia_Beach', 1418);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Providence', 'RI', 'Providence', 1641);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Milwaukee', 'WI', 'Milwaukee', 1177);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Jacksonville', 'FL', 'Jacksonville', 1403);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Memphis', 'TN', 'Memphis', 1420);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Oklahoma City', 'OK', 'Oklahoma_City', 1116);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Louisville', 'KY', 'Louisville', 1049);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Hartford', 'CT', 'Hartford', 1412);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Richmond', 'VA', 'Richmond', 1361);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('New Orleans', 'LA', 'New_Orleans', 1283);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Buffalo', 'NY', 'Buffalo', 1155);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Raleigh', 'NC', 'Raleigh', 1544);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Birmingham', 'AL', 'Birmingham', 1165);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Salt Lake City', 'UT', 'Salt_Lake_City', 1437);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Rochester', 'NY', 'Rochester', 1182);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Grand Rapids', 'MI', 'Grand_Rapids', 1286);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Tucson', 'AZ', 'Tucson', 1298);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Honolulu', 'HI', 'Honolulu', 2101);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Tulsa', 'OK', 'Tulsa', 1161);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Fresno', 'CA', 'Fresno', 1589);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Worcester', 'MA', 'Worcester', 1475);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Stamford', 'CT', 'Stamford', 2215);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Albuquerque', 'NM', 'Albuquerque', 1237);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Albany', 'NY', 'Albany', 1278);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Omaha', 'NE', 'Omaha', 1282);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('New Haven', 'CT', 'New_Haven', 1508);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Bakersfield', 'CA', 'Bakersfield', 1376);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Greenville', 'SC', 'Greenville', 1292);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Allentown', 'PA', 'Allentown', 1470);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('El Paso', 'TX', 'El_Paso', 1195);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Baton Rouge', 'LA', 'Baton_Rouge', 1238);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Dayton', 'OH', 'Dayton', 1060);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Columbia', 'SC', 'Columbia', 1204);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Greensboro', 'NC', 'Greensboro', 1296);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Akron', 'OH', 'Akron', 923);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('North Port-Sarasota-Bradenton', 'FL', 'North_Port-Sarasota-Bradenton', 1928);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Little Rock', 'AR', 'Little_Rock', 951);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Stockton', 'CA', 'Stockton', 2123);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Charleston', 'SC', 'Charleston', 1571);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Syracuse', 'NY', 'Syracuse', 1161);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Colorado Springs', 'CO', 'Colorado_Springs', 1602);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Winston-Salem', 'NC', 'WinstonSalem', 1297);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Wichita', 'KS', 'Wichita', 861);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Springfield', 'MA', 'Springfield', 1389);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Fort Myers', 'FL', 'Fort_Myers', 1694);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Boise City', 'ID', 'Boise_City', 1384);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Toledo', 'OH', 'Toledo', 932);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Madison', 'WI', 'Madison', 1339);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Lakeland', 'FL', 'Lakeland', 1474);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Ogden', 'UT', 'Ogden', 1377);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Daytona Beach', 'FL', 'Daytona_Beach', 1466);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Des Moines', 'IA', 'Des_Moines', 1187);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Jackson', 'MS', 'Jackson', 1281);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Youngstown', 'OH', 'Youngstown', 742);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Augusta', 'GA', 'Augusta', 1203);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Harrisburg', 'PA', 'Harrisburg', 1191);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Melbourne', 'FL', 'Melbourne', 1537);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Chattanooga', 'TN', 'Chattanooga', 1296);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Spokane', 'WA', 'Spokane', 1385);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Provo', 'UT', 'Provo', 1346);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Durham', 'NC', 'Durham', 1450);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Port St. Lucie', 'FL', 'Port_St._Lucie', 1794);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Fort Collins', 'CO', 'Fort_Collins', 1631);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Boulder', 'CO', 'Boulder', 2002);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Greeley', 'CO', 'Greeley', 1641);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Gainesville', 'GA', 'Gainesville', 1437);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Long Beach', 'CA', 'Long_Beach', 2562);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Anaheim', 'CA', 'Anaheim', 2562);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Fort Worth', 'TX', 'Fort_Worth', 1593);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('St Paul', 'MN', 'St_Paul', 1577);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Arlington', 'TX', 'Arlington', 1593);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Aurora', 'CO', 'Aurora', 1769);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Chandler', 'AZ', 'Chandler', 1549);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Arlington', 'VA', 'Arlington', 2079);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Chesapeake', 'VA', 'Chesapeake', 1418);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Chula Vista', 'CA', 'Chula_Vista', 2381);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Las Vegas', 'NV', 'Las_Vegas', 1476);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Mesa', 'AZ', 'Mesa', 1549);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Fremont', 'CA', 'Fremont', 2960);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Garland', 'TX', 'Garland', 1593);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Gilbert', 'AZ', 'Gilbert', 1549);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Glendale', 'AZ', 'Glendale', 1549);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Henderson', 'NV', 'Henderson', 1476);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Hialeah', 'FL', 'Hialeah', 1939);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Irvine', 'CA', 'Irvine', 2562);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Irving', 'TX', 'Irving', 1593);
+INSERT INTO public.cityspire_rent ("City", "State", city_code, "Dec Avg Rent") VALUES ('Jersey City', 'NJ', 'Jersey_City', 2584);
+
+
+--
+-- TOC entry 3860 (class 0 OID 16481)
+-- Dependencies: 210
+-- Data for Name: cityspire_score_weights; Type: TABLE DATA; Schema: public; Owner: ds_cityspire
+--
+
+INSERT INTO public.cityspire_score_weights (id, score, document) VALUES (1, 'city_score', '{"rent": 0.40, "crime": 0.30, "walkability": 0.20, "air_quality": 0.10}');
+
+
+--
+-- TOC entry 3855 (class 0 OID 16428)
+-- Dependencies: 205
+-- Data for Name: cityspire_wlk_scr; Type: TABLE DATA; Schema: public; Owner: ds_cityspire
+--
+
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (101, 1, 'NY', 'New_York_City', 100);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (102, 2, 'CA', 'Los_Angeles', 68);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (103, 3, 'IL', 'Chicago', 77);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (104, 4, 'TX', 'Houston', 48);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (105, 5, 'AZ', 'Phoenix', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (106, 6, 'PA', 'Philadelphia', 79);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (107, 7, 'TX', 'San_Antonio', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (108, 8, 'CA', 'San_Diego', 51);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (109, 9, 'TX', 'Dallas', 46);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (110, 10, 'TX', 'Austin', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (111, 11, 'CA', 'San_Jose', 49);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (112, 12, 'TX', 'Fort_Worth', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (113, 13, 'FL', 'Jacksonville', 26);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (114, 14, 'OH', 'Columbus', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (115, 15, 'NC', 'Charlotte', 26);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (116, 16, 'IN', 'Indianapolis', 31);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (117, 17, 'CA', 'San_Francisco', 87);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (118, 18, 'WA', 'Seattle', 74);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (119, 19, 'CO', 'Denver', 61);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (120, 20, 'DC', 'Washington', 54);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (121, 21, 'MA', 'Boston', 82);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (122, 22, 'TX', 'El_Paso', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (123, 23, 'TN', 'Nashville', 96);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (124, 24, 'OK', 'Oklahoma_City', 34);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (125, 25, 'NV', 'Las_Vegas', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (126, 26, 'MI', 'Detroit', 53);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (127, 27, 'OR', 'Portland', 67);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (128, 28, 'TN', 'Memphis', 36);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (129, 29, 'KY', 'Louisville', 91);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (130, 30, 'WI', 'Milwaukee', 63);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (131, 31, 'MD', 'Baltimore', 65);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (132, 32, 'NM', 'Albuquerque', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (133, 33, 'AZ', 'Tucson', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (134, 34, 'AZ', 'Mesa', 37);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (135, 35, 'CA', 'Fresno', 45);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (136, 36, 'CA', 'Sacramento', 45);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (137, 37, 'GA', 'Atlanta', 48);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (138, 38, 'MO', 'Kansas_City', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (139, 39, 'CO', 'Colorado_Springs', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (140, 40, 'NC', 'Raleigh', 31);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (141, 41, 'NE', 'Omaha', 47);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (142, 42, 'FL', 'Miami', 78);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (143, 43, 'CA', 'Long_Beach', 72);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (144, 44, 'VA', 'Virginia_Beach', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (145, 45, 'CA', 'Oakland', 74);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (146, 46, 'MN', 'Minneapolis', 70);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (147, 47, 'FL', 'Tampa', 49);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (148, 48, 'OK', 'Tulsa', 39);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (149, 49, 'TX', 'Arlington', 38);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (150, 50, 'KS', 'Wichita', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (151, 51, 'CA', 'Bakersfield', 34);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (152, 52, 'CO', 'Aurora', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (153, 53, 'LA', 'New_Orleans', 59);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (154, 54, 'OH', 'Cleveland', 60);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (155, 55, 'CA', 'Anaheim', 55);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (156, 56, 'NV', 'Henderson', 29);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (157, 57, 'HI', 'Honolulu', 65);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (158, 58, 'CA', 'Riverside', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (159, 59, 'CA', 'Santa_Ana', 66);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (160, 60, 'TX', 'Corpus_Christi', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (161, 61, 'KY', 'Lexington', 90);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (162, 62, 'PR', 'San_Juan', 83);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (163, 63, 'CA', 'Stockton', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (164, 64, 'MN', 'St_Paul', 85);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (165, 65, 'OH', 'Cincinnati', 50);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (166, 66, 'NC', 'Greensboro', 29);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (167, 67, 'PA', 'Pittsburgh', 63);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (168, 68, 'CA', 'Irvine', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (169, 69, 'MO', 'St_Louis', 86);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (170, 70, 'NE', 'Lincoln', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (171, 71, 'FL', 'Orlando', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (172, 72, 'NC', 'Durham', 29);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (173, 73, 'TX', 'Plano', 39);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (174, 74, 'AK', 'Anchorage', 28);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (175, 75, 'NJ', 'Newark', 79);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (176, 76, 'CA', 'Chula_Vista', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (177, 77, 'IN', 'Fort_Wayne', 30);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (178, 78, 'AZ', 'Chandler', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (179, 79, 'OH', 'Toledo', 45);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (180, 80, 'FL', 'St_Petersburg', 59);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (181, 81, 'NV', 'Reno', 38);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (182, 82, 'TX', 'Laredo', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (183, 83, 'AZ', 'Scottsdale', 31);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (184, 84, 'NV', 'North_Las_Vegas', 33);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (185, 85, 'TX', 'Lubbock', 38);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (186, 86, 'WI', 'Madison', 48);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (187, 87, 'AZ', 'Gilbert', 28);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (188, 88, 'NJ', 'Jersey_City', 87);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (189, 89, 'AZ', 'Glendale', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (190, 90, 'NY', 'Buffalo', 68);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (191, 91, 'NC', 'WinstonSalem', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (192, 92, 'VA', 'Chesapeake', 21);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (193, 93, 'CA', 'Fremont', 48);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (194, 94, 'VA', 'Norfolk', 45);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (195, 95, 'TX', 'Irving', 44);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (196, 96, 'TX', 'Garland', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (197, 97, 'NV', 'Paradise', 48);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (198, 98, 'VA', 'Arlington', 69);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (199, 99, 'VA', 'Richmond', 52);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (200, 100, 'FL', 'Hialeah', 69);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (201, 101, 'ID', 'Boise', 88);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (202, 102, 'WA', 'Spokane', 49);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (203, 103, 'TX', 'Frisco', 24);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (204, 104, 'CA', 'Moreno_Valley', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (205, 105, 'WA', 'Tacoma', 53);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (206, 106, 'CA', 'Fontana', 36);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (207, 107, 'CA', 'Modesto', 45);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (208, 108, 'LA', 'Baton_Rouge', 41);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (209, 109, 'FL', 'Port_St_Lucie', 0);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (210, 110, 'CA', 'San_Bernardino', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (211, 111, 'TX', 'McKinney', 27);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (212, 112, 'NC', 'Fayetteville', 21);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (213, 113, 'CA', 'Santa_Clarita', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (214, 114, 'IA', 'Des_Moines', 45);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (215, 115, 'CA', 'Oxnard', 55);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (216, 116, 'AL', 'Birmingham', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (217, 117, 'NV', 'Spring_Valley', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (218, 118, 'AL', 'Huntsville', 24);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (219, 119, 'NY', 'Rochester', 65);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (220, 120, 'FL', 'Cape_Coral', 17);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (221, 121, 'AZ', 'Tempe', 53);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (222, 122, 'MI', 'Grand_Rapids', 57);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (223, 123, 'NY', 'Yonkers', 70);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (224, 124, 'KS', 'Overland_Park', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (225, 125, 'UT', 'Salt_Lake_City', 59);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (226, 126, 'TX', 'Amarillo', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (227, 127, 'GA', 'Augusta', 63);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (228, 128, 'GA', 'Columbus', 26);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (229, 129, 'FL', 'Tallahassee', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (230, 130, 'AL', 'Montgomery', 26);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (231, 131, 'CA', 'Huntington_Beach', 55);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (232, 132, 'OH', 'Akron', 46);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (233, 133, 'AR', 'Little_Rock', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (234, 134, 'CA', 'Glendale', 71);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (235, 135, 'TX', 'Grand_Prairie', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (236, 136, 'IL', 'Aurora', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (237, 137, 'NV', 'Sunrise_Manor', 36);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (238, 138, 'CA', 'Ontario', 46);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (239, 139, 'SD', 'Sioux_Falls', 37);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (240, 140, 'TN', 'Knoxville', 31);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (241, 141, 'WA', 'Vancouver', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (242, 142, 'AL', 'Mobile', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (243, 143, 'MA', 'Worcester', 56);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (244, 144, 'TN', 'Chattanooga', 29);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (245, 145, 'TX', 'Brownsville', 39);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (246, 146, 'AZ', 'Peoria', 29);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (247, 147, 'FL', 'Fort_Lauderdale', 57);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (248, 148, 'LA', 'Shreveport', 31);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (249, 149, 'VA', 'Newport_News', 33);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (250, 150, 'RI', 'Providence', 78);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (251, 151, 'CA', 'Elk_Grove', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (252, 152, 'CA', 'Rancho_Cucamonga', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (253, 153, 'OR', 'Salem', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (254, 154, 'FL', 'Pembroke_Pines', 32);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (255, 155, 'CA', 'Santa_Rosa', 44);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (256, 156, 'OR', 'Eugene', 45);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (257, 157, 'CA', 'Oceanside', 36);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (258, 158, 'NC', 'Cary', 27);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (259, 159, 'CO', 'Fort_Collins', 37);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (260, 160, 'CA', 'Corona', 38);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (261, 161, 'NV', 'Enterprise', 24);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (262, 162, 'CA', 'Garden_Grove', 61);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (263, 163, 'MO', 'Springfield', 38);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (264, 164, 'TN', 'Clarksville', 18);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (265, 165, 'PR', 'Bayamon', 65);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (266, 166, 'CO', 'Lakewood', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (267, 167, 'VA', 'Alexandria', 60);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (268, 168, 'CA', 'Hayward', 55);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (269, 169, 'TN', 'Murfreesboro', 25);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (270, 170, 'TX', 'Killeen', 33);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (271, 171, 'FL', 'Hollywood', 54);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (272, 172, 'CA', 'Lancaster', 29);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (273, 173, 'CA', 'Salinas', 47);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (274, 174, 'MS', 'Jackson', 28);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (275, 175, 'TX', 'Midland', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (276, 176, 'GA', 'Macon_County', 3);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (277, 177, 'KS', 'Kansas_City', 33);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (278, 178, 'CA', 'Palmdale', 24);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (279, 179, 'CA', 'Sunnyvale', 59);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (280, 180, 'MA', 'Springfield', 59);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (281, 181, 'CA', 'Escondido', 44);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (282, 182, 'CA', 'Pomona', 52);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (283, 183, 'WA', 'Bellevue', 40);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (284, 184, 'AZ', 'Surprise', 21);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (285, 185, 'IL', 'Naperville', 34);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (286, 186, 'TX', 'Pasadena', 43);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (287, 187, 'TX', 'Denton', 33);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (288, 188, 'CA', 'Roseville', 36);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (289, 189, 'IL', 'Joliet', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (290, 190, 'CO', 'Thornton', 31);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (291, 191, 'TX', 'McAllen', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (292, 192, 'NJ', 'Paterson', 78);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (293, 193, 'IL', 'Rockford', 42);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (294, 194, 'TX', 'Carrollton', 35);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (295, 195, 'CT', 'Bridgeport', 67);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (296, 196, 'FL', 'Miramar', 28);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (297, 197, 'TX', 'Round_Rock', 24);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (298, 198, 'LA', 'Metairie', 54);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (299, 199, 'KS', 'Olathe', 27);
+INSERT INTO public.cityspire_wlk_scr (id, city_id, state, city_code, walk_score) VALUES (300, 200, 'TX', 'Waco', 36);
+
+
+--
+-- TOC entry 3874 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: cityspire_cities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ds_cityspire
+--
+
+SELECT pg_catalog.setval('public.cityspire_cities_id_seq', 200, true);
+
+
+--
+-- TOC entry 3875 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: cityspire_crime_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ds_cityspire
+--
+
+SELECT pg_catalog.setval('public.cityspire_crime_id_seq', 8505, true);
+
+
+--
+-- TOC entry 3876 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: cityspire_score_weights_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ds_cityspire
+--
+
+SELECT pg_catalog.setval('public.cityspire_score_weights_id_seq', 1, true);
+
+
+--
+-- TOC entry 3877 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: cityspire_wlk_scr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ds_cityspire
+--
+
+SELECT pg_catalog.setval('public.cityspire_wlk_scr_id_seq', 300, true);
+
+
+--
+-- TOC entry 3723 (class 2606 OID 16447)
+-- Name: cityspire_cities cityspire_cities_pkey; Type: CONSTRAINT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_cities
+    ADD CONSTRAINT cityspire_cities_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3719 (class 2606 OID 16424)
+-- Name: cityspire_crime cityspire_crime_pkey; Type: CONSTRAINT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_crime
+    ADD CONSTRAINT cityspire_crime_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3725 (class 2606 OID 16489)
+-- Name: cityspire_score_weights cityspire_score_weights_pkey; Type: CONSTRAINT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_score_weights
+    ADD CONSTRAINT cityspire_score_weights_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3721 (class 2606 OID 16436)
+-- Name: cityspire_wlk_scr cityspire_wlk_scr_pkey; Type: CONSTRAINT; Schema: public; Owner: ds_cityspire
+--
+
+ALTER TABLE ONLY public.cityspire_wlk_scr
+    ADD CONSTRAINT cityspire_wlk_scr_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3868 (class 0 OID 0)
+-- Dependencies: 3
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: ds_cityspire
+--
+
+REVOKE ALL ON SCHEMA public FROM rdsadmin;
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO ds_cityspire;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2021-02-25 10:17:29 CST
+
+--
+-- PostgreSQL database dump complete
+--
+
