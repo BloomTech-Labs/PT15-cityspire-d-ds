@@ -1,0 +1,200 @@
+1,New York City,NY,New_York_City
+2,Los Angeles,CA,Los_Angeles
+3,Chicago,IL,Chicago
+4,Houston,TX,Houston
+5,Phoenix,AZ,Phoenix
+6,Philadelphia,PA,Philadelphia
+7,San Antonio,TX,San_Antonio
+8,San Diego,CA,San_Diego
+9,Dallas,TX,Dallas
+10,Austin,TX,Austin
+11,San Jose,CA,San_Jose
+12,Fort Worth,TX,Fort_Worth
+13,Jacksonville,FL,Jacksonville
+14,Columbus,OH,Columbus
+15,Charlotte,NC,Charlotte
+16,Indianapolis,IN,Indianapolis
+17,San Francisco,CA,San_Francisco
+18,Seattle,WA,Seattle
+19,Denver,CO,Denver
+20,Washington,DC,Washington
+21,Boston,MA,Boston
+22,El Paso,TX,El_Paso
+23,Nashville,TN,Nashville
+24,Oklahoma City,OK,Oklahoma_City
+25,Las Vegas,NV,Las_Vegas
+26,Detroit,MI,Detroit
+27,Portland,OR,Portland
+28,Memphis,TN,Memphis
+29,Louisville,KY,Louisville
+30,Milwaukee,WI,Milwaukee
+31,Baltimore,MD,Baltimore
+32,Albuquerque,NM,Albuquerque
+33,Tucson,AZ,Tucson
+34,Mesa,AZ,Mesa
+35,Fresno,CA,Fresno
+36,Sacramento,CA,Sacramento
+37,Atlanta,GA,Atlanta
+38,Kansas City,MO,Kansas_City
+39,Colorado Springs,CO,Colorado_Springs
+40,Raleigh,NC,Raleigh
+41,Omaha,NE,Omaha
+42,Miami,FL,Miami
+43,Long Beach,CA,Long_Beach
+44,Virginia Beach,VA,Virginia_Beach
+45,Oakland,CA,Oakland
+46,Minneapolis,MN,Minneapolis
+47,Tampa,FL,Tampa
+48,Tulsa,OK,Tulsa
+49,Arlington,TX,Arlington
+50,Wichita,KS,Wichita
+51,Bakersfield,CA,Bakersfield
+52,Aurora,CO,Aurora
+53,New Orleans,LA,New_Orleans
+54,Cleveland,OH,Cleveland
+55,Anaheim,CA,Anaheim
+56,Henderson,NV,Henderson
+57,Honolulu,HI,Honolulu
+58,Riverside,CA,Riverside
+59,Santa Ana,CA,Santa_Ana
+60,Corpus Christi,TX,Corpus_Christi
+61,Lexington,KY,Lexington
+62,San Juan,PR,San_Juan
+63,Stockton,CA,Stockton
+64,St. Paul,MN,St_Paul
+65,Cincinnati,OH,Cincinnati
+66,Greensboro,NC,Greensboro
+67,Pittsburgh,PA,Pittsburgh
+68,Irvine,CA,Irvine
+69,St. Louis,MO,St_Louis
+70,Lincoln,NE,Lincoln
+71,Orlando,FL,Orlando
+72,Durham,NC,Durham
+73,Plano,TX,Plano
+74,Anchorage,AK,Anchorage
+75,Newark,NJ,Newark
+76,Chula Vista,CA,Chula_Vista
+77,Fort Wayne,IN,Fort_Wayne
+78,Chandler,AZ,Chandler
+79,Toledo,OH,Toledo
+80,St. Petersburg,FL,St_Petersburg
+81,Reno,NV,Reno
+82,Laredo,TX,Laredo
+83,Scottsdale,AZ,Scottsdale
+84,North Las Vegas,NV,North_Las_Vegas
+85,Lubbock,TX,Lubbock
+86,Madison,WI,Madison
+87,Gilbert,AZ,Gilbert
+88,Jersey City,NJ,Jersey_City
+89,Glendale,AZ,Glendale
+90,Buffalo,NY,Buffalo
+91,Winston-Salem,NC,WinstonSalem
+92,Chesapeake,VA,Chesapeake
+93,Fremont,CA,Fremont
+94,Norfolk,VA,Norfolk
+95,Irving,TX,Irving
+96,Garland,TX,Garland
+97,Paradise,NV,Paradise
+98,Arlington,VA,Arlington
+99,Richmond,VA,Richmond
+100,Hialeah,FL,Hialeah
+101,Boise,ID,Boise
+102,Spokane,WA,Spokane
+103,Frisco,TX,Frisco
+104,Moreno Valley,CA,Moreno_Valley
+105,Tacoma,WA,Tacoma
+106,Fontana,CA,Fontana
+107,Modesto,CA,Modesto
+108,Baton Rouge,LA,Baton_Rouge
+109,Port St. Lucie,FL,Port_St_Lucie
+110,San Bernardino,CA,San_Bernardino
+111,McKinney,TX,McKinney
+112,Fayetteville,NC,Fayetteville
+113,Santa Clarita,CA,Santa_Clarita
+114,Des Moines,IA,Des_Moines
+115,Oxnard,CA,Oxnard
+116,Birmingham,AL,Birmingham
+117,Spring Valley,NV,Spring_Valley
+118,Huntsville,AL,Huntsville
+119,Rochester,NY,Rochester
+120,Cape Coral,FL,Cape_Coral
+121,Tempe,AZ,Tempe
+122,Grand Rapids,MI,Grand_Rapids
+123,Yonkers,NY,Yonkers
+124,Overland Park,KS,Overland_Park
+125,Salt Lake City,UT,Salt_Lake_City
+126,Amarillo,TX,Amarillo
+127,Augusta,GA,Augusta
+128,Columbus,GA,Columbus
+129,Tallahassee,FL,Tallahassee
+130,Montgomery,AL,Montgomery
+131,Huntington Beach,CA,Huntington_Beach
+132,Akron,OH,Akron
+133,Little Rock,AR,Little_Rock
+134,Glendale,CA,Glendale
+135,Grand Prairie,TX,Grand_Prairie
+136,Aurora,IL,Aurora
+137,Sunrise Manor,NV,Sunrise_Manor
+138,Ontario,CA,Ontario
+139,Sioux Falls,SD,Sioux_Falls
+140,Knoxville,TN,Knoxville
+141,Vancouver,WA,Vancouver
+142,Mobile,AL,Mobile
+143,Worcester,MA,Worcester
+144,Chattanooga,TN,Chattanooga
+145,Brownsville,TX,Brownsville
+146,Peoria,AZ,Peoria
+147,Fort Lauderdale,FL,Fort_Lauderdale
+148,Shreveport,LA,Shreveport
+149,Newport News,VA,Newport_News
+150,Providence,RI,Providence
+151,Elk Grove,CA,Elk_Grove
+152,Rancho Cucamonga,CA,Rancho_Cucamonga
+153,Salem,OR,Salem
+154,Pembroke Pines,FL,Pembroke_Pines
+155,Santa Rosa,CA,Santa_Rosa
+156,Eugene,OR,Eugene
+157,Oceanside,CA,Oceanside
+158,Cary,NC,Cary
+159,Fort Collins,CO,Fort_Collins
+160,Corona,CA,Corona
+161,Enterprise,NV,Enterprise
+162,Garden Grove,CA,Garden_Grove
+163,Springfield,MO,Springfield
+164,Clarksville,TN,Clarksville
+165,Bayamon,PR,Bayamon
+166,Lakewood,CO,Lakewood
+167,Alexandria,VA,Alexandria
+168,Hayward,CA,Hayward
+169,Murfreesboro,TN,Murfreesboro
+170,Killeen,TX,Killeen
+171,Hollywood,FL,Hollywood
+172,Lancaster,CA,Lancaster
+173,Salinas,CA,Salinas
+174,Jackson,MS,Jackson
+175,Midland,TX,Midland
+176,Macon County,GA,Macon_County
+177,Kansas City,KS,Kansas_City
+178,Palmdale,CA,Palmdale
+179,Sunnyvale,CA,Sunnyvale
+180,Springfield,MA,Springfield
+181,Escondido,CA,Escondido
+182,Pomona,CA,Pomona
+183,Bellevue,WA,Bellevue
+184,Surprise,AZ,Surprise
+185,Naperville,IL,Naperville
+186,Pasadena,TX,Pasadena
+187,Denton,TX,Denton
+188,Roseville,CA,Roseville
+189,Joliet,IL,Joliet
+190,Thornton,CO,Thornton
+191,McAllen,TX,McAllen
+192,Paterson,NJ,Paterson
+193,Rockford,IL,Rockford
+194,Carrollton,TX,Carrollton
+195,Bridgeport,CT,Bridgeport
+196,Miramar,FL,Miramar
+197,Round Rock,TX,Round_Rock
+198,Metairie,LA,Metairie
+199,Olathe,KS,Olathe
+200,Waco,TX,Waco
