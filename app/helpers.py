@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+import psycopg2
+
+from fastapi import HTTPException
+
 # gen_crime_score fetches a scaled city crime rate from the
 #   database and translates that value to a 1-5 crime score
 def gen_crime_score(db_conn, city):
