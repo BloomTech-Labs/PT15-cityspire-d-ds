@@ -31,7 +31,7 @@ See `.env` file for example values
 ## Current Issues
 
 * Issue #24: Exception when Handling a Non-Supported City [link](https://github.com/Lambda-School-Labs/cityspire-d-ds/issues/24)
-
+* Issue #28: DS API Instance Experience 500 Errors [link](https://github.com/Lambda-School-Labs/cityspire-d-ds/issues/28)
 
 ## Documentation
 
